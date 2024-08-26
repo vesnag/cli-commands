@@ -14,6 +14,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	unzip \
 	libicu-dev \
 	libzip-dev \
+	cron \
+	procps \
 	&& rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions and Composer
@@ -41,5 +43,26 @@ RUN set -eux; \
 	chmod +x bin/console; sync;
 ###< Application-specific setup ###
 
-# Command to run the Symfony CLI application
+# Add crontab file
+COPY crontab /etc/cron.d/my-cron-job
+
+# Give execution rights on the cron job
+RUN chmod 0644 /etc/cron.d/my-cron-job
+
+# Apply cron job
+RUN crontab /etc/cron.d/my-cron-job
+
+# Create the log file to be able to run tail
+RUN touch /var/log/cron.log
+
+# Copy entrypoint script
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+
+# Give execution rights on the entrypoint script
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Set the entrypoint
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+# Default command (can be overridden by providing a command)
 CMD ["php", "bin/console"]
