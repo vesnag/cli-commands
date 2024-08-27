@@ -11,7 +11,7 @@ class GitHubRepository implements RepositoryInterface
     ) {
     }
 
-    public function checkStatus()
+    public function checkStatus(): void
     {
         // Use GitHub API to check status
         // Return status

@@ -11,7 +11,7 @@ class SlackNotification implements NotificationInterface
     ) {
     }
 
-    public function send(string $message)
+    public function send(string $message): bool
     {
         // Use Slack API to send message
         return true;

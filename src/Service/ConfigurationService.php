@@ -15,12 +15,12 @@ class ConfigurationService
         $this->config = Yaml::parseFile($filePath);
     }
 
-    public function getRepositoryConfig()
+    public function getRepositoryConfig(): array
     {
         return $this->config['repository'];
     }
 
-    public function getNotificationConfig()
+    public function getNotificationConfig(): array
     {
         return $this->config['notification'];
     }

@@ -10,7 +10,7 @@ class GitLabRepository implements RepositoryInterface
     {
     }
 
-    public function checkStatus()
+    public function checkStatus(): void
     {
         // Use GitLab API to check status
         // Return status

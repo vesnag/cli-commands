@@ -13,12 +13,12 @@ class ConfigurationFactory
         $this->configService = $configService;
     }
 
-    public function createRepositoryConfig()
+    public function createRepositoryConfig(): array
     {
         return $this->configService->getRepositoryConfig();
     }
 
-    public function createNotificationConfig()
+    public function createNotificationConfig(): array
     {
         return $this->configService->getNotificationConfig();
     }

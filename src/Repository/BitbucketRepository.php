@@ -11,7 +11,7 @@ class BitbucketRepository implements RepositoryInterface
     ) {
     }
 
-    public function checkStatus()
+    public function checkStatus(): void
     {
         // Use Bitbucket API to check status
         // Return status
