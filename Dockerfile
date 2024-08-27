@@ -35,7 +35,7 @@ COPY . ./
 
 # Run composer install after copying the full project
 RUN set -eux; \
-	composer install --no-cache --prefer-dist --no-dev --no-progress
+	composer install --no-cache --prefer-dist --no-dev --no-progress --no-scripts
 
 # Ensure permissions are set correctly for runtime directories
 RUN set -eux; \
