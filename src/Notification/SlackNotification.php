@@ -6,11 +6,9 @@ namespace App\Notification;
 
 class SlackNotification implements NotificationInterface
 {
-    private $config;
-
-    public function __construct(array $config)
-    {
-        $this->config = $config;
+    public function __construct(
+        private array $config,
+    ) {
     }
 
     public function send(string $message)

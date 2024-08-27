@@ -6,11 +6,9 @@ namespace App\Repository;
 
 class GitHubRepository implements RepositoryInterface
 {
-    private $config;
-
-    public function __construct(array $config)
-    {
-        $this->config = $config;
+    public function __construct(
+        private array $config
+    ) {
     }
 
     public function checkStatus()
