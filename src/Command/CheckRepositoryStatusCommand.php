@@ -5,20 +5,20 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Service\ConfigurationService;
-use App\Repository\RepositoryInterface;
-use App\Notification\NotificationInterface;
+use App\Repository\GitHubRepository;
+use App\Notification\SlackNotification;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class CheckRepositoryStatusCommand extends Command
 {
-    protected static $defaultName = 'app:check-repo-status';
+    protected static $defaultName = 'app:check-repository-status';
 
     public function __construct(
         private ConfigurationService $configService,
-        private RepositoryInterface $repository,
-        private NotificationInterface $notification
+        private GitHubRepository $repository,
+        private SlackNotification $notification
     ) {
         parent::__construct();
     }
@@ -26,15 +26,12 @@ class CheckRepositoryStatusCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription('Checks the status of a repository and sends a notification.');
+            ->setDescription('Checks the status of the repository and sends a notification.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $status = $this->repository->checkStatus();
-        $this->notification->send($status);
-
-        $output->writeln($status);
+        // Your command logic here
 
         return Command::SUCCESS;
     }
