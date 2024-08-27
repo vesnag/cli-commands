@@ -20,5 +20,29 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    App\Service\ConfigurationService:
+        arguments:
+            $filePath: '%kernel.project_dir%/config/config.yaml'
+
+    App\Repository\GitHubRepository:
+        arguments:
+            $config: '@=service("App\Service\ConfigurationService").getRepositoryConfig()'
+
+    App\Repository\GitLabRepository:
+        arguments:
+            $config: '@=service("App\Service\ConfigurationService").getRepositoryConfig()'
+
+    App\Repository\BitbucketRepository:
+        arguments:
+            $config: '@=service("App\Service\ConfigurationService").getRepositoryConfig()'
+
+    App\Notification\SlackNotification:
+        arguments:
+            $config: '@=service("App\Service\ConfigurationService").getNotificationConfig()'
+
+    App\Command\CheckRepositoryStatusCommand:
+        arguments:
+            $configService: '@App\Service\ConfigurationService'
+            $repository: '@App\Repository\GitHubRepository' # Change this based on the repository type
+            $notification: '@App\Notification\SlackNotification'
+        tags: ['console.command']
