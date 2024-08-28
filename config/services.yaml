@@ -1,3 +1,6 @@
+imports:
+    - { resource: '../src/AG/RepoStatusBundle/Resources/config/services.yaml' }
+
 services:
     _defaults:
         autowire: true      # Automatically injects dependencies based on type hints
@@ -10,44 +13,3 @@ services:
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
-
-    AG\RepoStatusBundle\Controller\:
-        resource: '../src/AG/RepoStatusBundle/Controller/'
-        tags: ['controller.service_arguments']
-
-    # Define the ConfigurationService with explicit argument
-    App\Service\ConfigurationService:
-        arguments:
-            $filePath: '%kernel.project_dir%/config/config.yaml'
-
-    # Define the ConfigurationFactory
-    App\Service\ConfigurationFactory: ~
-
-    # Define the repository config service
-    App\Service\RepositoryConfig:
-        factory: ['@App\Service\ConfigurationFactory', 'createRepositoryConfig']
-
-    # Define the notification config service
-    App\Service\NotificationConfig:
-        factory: ['@App\Service\ConfigurationFactory', 'createNotificationConfig']
-
-    # Explicitly define services that require specific arguments
-    App\Repository\BitbucketRepository:
-        arguments:
-            $config: '@App\Service\RepositoryConfig'
-
-    App\Notification\SlackNotification:
-        arguments:
-            $config: '@App\Service\NotificationConfig'
-
-    App\Repository\GitHubRepository:
-        arguments:
-            $config: '@App\Service\RepositoryConfig'
-
-    App\Command\CheckRepositoryStatusCommand:
-        arguments:
-            $configService: '@App\Service\ConfigurationService'
-            $repository: '@App\Repository\GitHubRepository' # Change this based on the repository type
-        tags: ['console.command']
-
-
