@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AG\RepoStatusBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
