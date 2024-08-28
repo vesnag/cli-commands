@@ -1,0 +1,26 @@
+services:
+    App\RepoStatusBundle\Config\GitHubConfig:
+        arguments:
+            $owner: '%github_owner%'
+            $repo: '%github_repo%'
+
+    App\RepoStatusBundle\Config\GitLabConfig:
+        arguments:
+            $owner: '%gitlab_owner%'
+            $repo: '%gitlab_repo%'
+
+    App\RepoStatusBundle\Config\BitbucketConfig:
+        arguments:
+            $owner: '%bitbucket_owner%'
+            $repo: '%bitbucket_repo%'
+
+    App\RepoStatusBundle\Command\CheckRepositoryStatusCommand:
+        tags: ['console.command']
+
+    App\RepoStatusBundle\Service\RepositoryStatusChecker: ~
+
+    App\RepoStatusBundle\Client\GitHubClient: ~
+
+    App\RepoStatusBundle\Client\BitbucketClient: ~
+
+    App\RepoStatusBundle\Client\GitLabClient: ~

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace AG\RepoStatusBundle\Config;
+namespace App\RepoStatusBundle\Config;
 
 class BitbucketConfig
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace AG\RepoStatusBundle\Client;
+namespace App\RepoStatusBundle\Client;
 
-use AG\RepoStatusBundle\Model\PullRequest;
+use App\RepoStatusBundle\Model\PullRequest;
 
 interface VcsClient
 {

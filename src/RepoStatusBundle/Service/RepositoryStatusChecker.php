@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace AG\RepoStatusBundle\Service;
+namespace App\RepoStatusBundle\Service;
 
-use AG\RepoStatusBundle\Client\GitHubClient;
+use App\RepoStatusBundle\Client\GitHubClient;
 
 class RepositoryStatusChecker
 {

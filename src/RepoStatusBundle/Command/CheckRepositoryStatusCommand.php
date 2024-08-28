@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace AG\RepoStatusBundle\Command;
+namespace App\RepoStatusBundle\Command;
 
-use AG\RepoStatusBundle\Service\RepositoryStatusChecker;
+use App\RepoStatusBundle\Service\RepositoryStatusChecker;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

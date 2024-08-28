@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace AG\RepoStatusBundle\Client;
+namespace App\RepoStatusBundle\Client;
 
-use AG\RepoStatusBundle\Config\GitHubConfig;
-use AG\RepoStatusBundle\Model\PullRequest;
+use App\RepoStatusBundle\Config\GitHubConfig;
+use App\RepoStatusBundle\Model\PullRequest;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class GitHubClient implements VcsClient

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace AG\RepoStatusBundle\Controller;
+namespace App\RepoStatusBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;

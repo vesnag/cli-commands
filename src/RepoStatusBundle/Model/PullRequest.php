@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace AG\RepoStatusBundle\Model;
+namespace App\RepoStatusBundle\Model;
 
 class PullRequest
 {

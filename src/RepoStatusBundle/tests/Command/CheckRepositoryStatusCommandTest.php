@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace AG\RepoStatusBundle\Tests\Command;
+namespace App\RepoStatusBundle\Command;
 
-use AG\RepoStatusBundle\Client\GitHubClient;
-use AG\RepoStatusBundle\Command\CheckRepositoryStatusCommand;
-use AG\RepoStatusBundle\Service\RepositoryStatusChecker;
-use AG\RepoStatusBundle\Model\PullRequest;
+use App\RepoStatusBundle\Client\GitHubClient;
+use App\RepoStatusBundle\Command\CheckRepositoryStatusCommand;
+use App\RepoStatusBundle\Service\RepositoryStatusChecker;
+use App\RepoStatusBundle\Model\PullRequest;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
