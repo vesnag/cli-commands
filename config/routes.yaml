@@ -3,9 +3,3 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
-
-repo_status_bundle:
-    resource:
-        path: ../src/AG/RepoStatusBundle/Controller/
-        namespace: AG\RepoStatusBundle\Controller
-    type: attribute

@@ -1,20 +1,26 @@
+parameters:
+    github_owner: '%env(GITHUB_OWNER)%'
+    github_repo: '%env(GITHUB_REPO)%'
+    gitlab_owner: '%env(GITLAB_OWNER)%'
+    gitlab_repo: '%env(GITLAB_REPO)%'
+    bitbucket_owner: '%env(BITBUCKET_OWNER)%'
+    bitbucket_repo: '%env(BITBUCKET_REPO)%'
+
 imports:
-    - { resource: '../src/AG/RepoStatusBundle/Resources/config/services.yaml' }
+    - { resource: '../src/RepoStatusBundle/Resources/config/services.yaml' }
 
 services:
     _defaults:
-        autowire: true      # Automatically injects dependencies based on type hints
-        autoconfigure: true # Automatically registers services as commands, event subscribers, etc.
+        autowire: true
+        autoconfigure: true
+        bind:
+            $owner: '%github_owner%'
+            $repo: '%github_repo%'
 
     App\:
         resource: '../src/*'
-        exclude: '../src/{DependencyInjection,Entity,Tests,Kernel.php}'
+        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
 
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
-
-    AG\RepoStatusBundle\Command\CheckRepositoryStatusCommand:
-        tags: ['console.command']
-
-    AG\RepoStatusBundle\Service\RepositoryStatusChecker: ~
