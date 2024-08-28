@@ -30,9 +30,7 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/",
-            "App\\HelloWorldBundle\\": "src/HelloWorldBundle/",
-            "AG\\RepoStatusBundle\\": "src/AG/RepoStatusBundle/"
+            "App\\": "src/"
         }
     },
     "autoload-dev": {
