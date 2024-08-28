@@ -10,18 +10,8 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class GitLabClient implements VcsClient
 {
-    private GitHubConfig $config;
-    private HttpClientInterface $httpClient;
-
-    public function __construct(GitHubConfig $config, HttpClientInterface $httpClient)
-    {
-        $this->config = $config;
-        $this->httpClient = $httpClient;
-    }
-
     public function getPullRequests(): array
     {
-        // Dummy implementation
         return [];
     }
 }

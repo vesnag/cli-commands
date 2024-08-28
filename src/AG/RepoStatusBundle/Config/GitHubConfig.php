@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 namespace AG\RepoStatusBundle\Config;
+
 class GitHubConfig
 {
     public function __construct(
