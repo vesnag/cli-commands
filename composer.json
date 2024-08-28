@@ -28,10 +28,10 @@
         },
         "sort-packages": true
     },
-    "autoload": {
+   "autoload": {
         "psr-4": {
             "App\\": "src/",
-            "AG\\RepoStatusBundle\\": "src/AG/RepoStatusBundle/"
+            "AG\\AGHelloWorldBundle\\": "src/AG/AGHelloWorldBundle/"
         }
     },
     "autoload-dev": {
