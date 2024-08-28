@@ -18,6 +18,7 @@ class GitHubClientTest extends TestCase
         $config->method('getOwner')->willReturn('owner');
         $config->method('getRepo')->willReturn('repo');
 
+        // @todo Create Fake client.
         $httpClient = $this->createMock(HttpClientInterface::class);
         $response = $this->createMock(ResponseInterface::class);
 

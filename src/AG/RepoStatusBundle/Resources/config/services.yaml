@@ -25,3 +25,10 @@ services:
         arguments:
             $owner: '%bitbucket_owner%'
             $repo: '%bitbucket_repo%'
+
+    AG\RepoStatusBundle\Command\CheckRepositoryStatusCommand:
+        tags: ['console.command']
+
+    AG\RepoStatusBundle\Service\RepositoryStatusChecker: ~
+
+    AG\RepoStatusBundle\Client\GitHubClient: ~

@@ -4,12 +4,6 @@ controllers:
         namespace: App\Controller
     type: attribute
 
-hello_world_bundle:
-    resource:
-        path: ../src/HelloWorldBundle/Controller/
-        namespace: App\HelloWorldBundle\Controller
-    type: attribute
-
 repo_status_bundle:
     resource:
         path: ../src/AG/RepoStatusBundle/Controller/
