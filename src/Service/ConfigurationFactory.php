@@ -4,21 +4,22 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Config\NotificationConfig;
+use App\Config\RepositoryConfig;
+
 class ConfigurationFactory
 {
-    private ConfigurationService $configService;
-
-    public function __construct(ConfigurationService $configService)
-    {
-        $this->configService = $configService;
+    public function __construct(
+        private ConfigurationService $configService
+    ) {
     }
 
-    public function createRepositoryConfig(): array
+    public function createRepositoryConfig(): RepositoryConfig
     {
         return $this->configService->getRepositoryConfig();
     }
 
-    public function createNotificationConfig(): array
+    public function createNotificationConfig(): NotificationConfig
     {
         return $this->configService->getNotificationConfig();
     }

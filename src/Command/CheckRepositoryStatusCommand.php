@@ -8,7 +8,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use App\Service\ConfigurationService;
-use App\Service\GitHubRepository;
+use App\Repository\RepositoryInterface;
 
 class CheckRepositoryStatusCommand extends Command
 {
@@ -16,7 +16,7 @@ class CheckRepositoryStatusCommand extends Command
 
     public function __construct(
         private ConfigurationService $configService,
-        private GitHubRepository $repository
+        private RepositoryInterface $repository,
     ) {
         parent::__construct();
     }
@@ -32,8 +32,10 @@ class CheckRepositoryStatusCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // Example usage of the properties to avoid PHPStan warnings
-        $config = $this->configService->getConfig();
-        $status = $this->repository->getStatus();
+        $config = $this->configService->getRepositoryConfig();
+        $status = $this->repository->checkStatus();
+
+        $output->writeln('Repository status: ' . $status);
 
         // Your command logic here
 

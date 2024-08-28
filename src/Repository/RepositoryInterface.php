@@ -6,5 +6,5 @@ namespace App\Repository;
 
 interface RepositoryInterface
 {
-    public function checkStatus(): void;
+    public function checkStatus(): string;
 }
