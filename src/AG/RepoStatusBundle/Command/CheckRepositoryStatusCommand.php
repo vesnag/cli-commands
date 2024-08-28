@@ -13,12 +13,9 @@ class CheckRepositoryStatusCommand extends Command
 {
     protected static string $defaultName = 'app:check-repository-status';
 
-    private RepositoryStatusChecker $statusChecker;
-
-    public function __construct(RepositoryStatusChecker $statusChecker)
+    public function __construct(private RepositoryStatusChecker $statusChecker)
     {
         parent::__construct();
-        $this->statusChecker = $statusChecker;
     }
 
     protected function configure()
