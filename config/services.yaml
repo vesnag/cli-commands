@@ -11,6 +11,10 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
+    AG\RepoStatusBundle\Controller\:
+        resource: '../src/AG/RepoStatusBundle/Controller/'
+        tags: ['controller.service_arguments']
+
     # Define the ConfigurationService with explicit argument
     App\Service\ConfigurationService:
         arguments:
@@ -44,5 +48,6 @@ services:
         arguments:
             $configService: '@App\Service\ConfigurationService'
             $repository: '@App\Repository\GitHubRepository' # Change this based on the repository type
-            $notification: '@App\Notification\SlackNotification'
         tags: ['console.command']
+
+

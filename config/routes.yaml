@@ -9,3 +9,9 @@ hello_world_bundle:
         path: ../src/HelloWorldBundle/Controller/
         namespace: App\HelloWorldBundle\Controller
     type: attribute
+
+repo_status_bundle:
+    resource:
+        path: ../src/AG/RepoStatusBundle/Controller/
+        namespace: AG\RepoStatusBundle\Controller
+    type: attribute
