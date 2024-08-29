@@ -8,18 +8,25 @@ use App\RepoStatusBundle\Client\GitHubClient;
 
 class RepositoryStatusChecker
 {
-    private GitHubClient $gitHubClient;
-
-    public function __construct(GitHubClient $gitHubClient)
-    {
-        $this->gitHubClient = $gitHubClient;
+    public function __construct(
+        private GitHubClient $gitHubClient
+    ) {
     }
 
     public function getOpenPullRequestsCount(): int
     {
         $pullRequests = $this->gitHubClient->getPullRequests();
         $openPullRequests = array_filter($pullRequests, fn($pr) => $pr->state === 'open');
-
         return count($openPullRequests);
+    }
+
+    public function getPullRequestsForDateRange(?string $startDate = null, ?string $endDate = null): array
+    {
+        return $this->gitHubClient->getPullRequests($startDate, $endDate);
+    }
+
+    public function getCommitCount(?string $startDate = null, ?string $endDate = null): int
+    {
+        return $this->gitHubClient->getCommitCount($startDate, $endDate);
     }
 }

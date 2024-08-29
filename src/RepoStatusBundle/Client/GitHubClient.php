@@ -16,7 +16,7 @@ class GitHubClient implements VcsClient
     ) {
     }
 
-    public function getPullRequests(): array
+    public function getPullRequests(?string $startDate = null, ?string $endDate = null): array
     {
         $apiUrl = sprintf(
             'https://api.github.com/repos/%s/%s/pulls',
@@ -24,10 +24,19 @@ class GitHubClient implements VcsClient
             $this->config->getRepo()
         );
 
+        $queryParams = [];
+        if ($startDate) {
+            $queryParams['since'] = $startDate;
+        }
+        if ($endDate) {
+            $queryParams['until'] = $endDate;
+        }
+
         $response = $this->httpClient->request('GET', $apiUrl, [
             'headers' => [
                 'Accept' => 'application/vnd.github.v3+json',
             ],
+            'query' => $queryParams,
         ]);
 
         $pullRequestsData = $response->toArray();
@@ -39,5 +48,33 @@ class GitHubClient implements VcsClient
             url: $prData['html_url'],
             state: $prData['state']
         ), $pullRequestsData);
+    }
+
+    public function getCommitCount(?string $startDate = null, ?string $endDate = null): int
+    {
+        $apiUrl = sprintf(
+            'https://api.github.com/repos/%s/%s/commits',
+            $this->config->getOwner(),
+            $this->config->getRepo()
+        );
+
+        $queryParams = [];
+        if ($startDate) {
+            $queryParams['since'] = $startDate;
+        }
+        if ($endDate) {
+            $queryParams['until'] = $endDate;
+        }
+
+        $response = $this->httpClient->request('GET', $apiUrl, [
+            'headers' => [
+                'Accept' => 'application/vnd.github.v3+json',
+            ],
+            'query' => $queryParams,
+        ]);
+
+        $commitsData = $response->toArray();
+
+        return count($commitsData);
     }
 }
