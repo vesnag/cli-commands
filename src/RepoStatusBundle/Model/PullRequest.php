@@ -14,4 +14,29 @@ class PullRequest
         public readonly string $state
     ) {
     }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    public function getAuthor(): string
+    {
+        return $this->author;
+    }
+
+    public function getUrl(): string
+    {
+        return $this->url;
+    }
+
+    public function getState(): string
+    {
+        return $this->state;
+    }
 }

@@ -70,13 +70,13 @@ class CheckRepositoryStatusCommand extends BaseCommand
                 true
             ),
             self::TIME_PERIOD => new ChoiceQuestion(
-                'Select time period',
+                'Select time period [entire history]',
                 ['today', 'this week', 'entire history'],
-                0
+                2
             ),
             self::GET_COUNT_PRS => new ConfirmationQuestion('Do you want to get number of PRs? (yes/no) [yes]', true),
             self::GET_COUNT_COMMITS => new ConfirmationQuestion('Do you want to get number of commits? (yes/no) [yes]', true),
-            self::GENERATE_SLACK_REPORT => new ConfirmationQuestion('Do you want to generate a report for Slack? (yes/no) [yes]', true),
+            self::GENERATE_SLACK_REPORT => new ConfirmationQuestion('Do you want to generate a report, message for Slack? (yes/no) [yes]', true),
             self::PUBLISH_TO_SLACK => new ConfirmationQuestion('Do you want to publish this status to Slack? (yes/no) [no]', false),
         ];
     }

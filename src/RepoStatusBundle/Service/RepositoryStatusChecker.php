@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\RepoStatusBundle\Service;
 
 use App\RepoStatusBundle\Client\GitHubClient;
+use App\RepoStatusBundle\Model\PullRequest;
 
 class RepositoryStatusChecker
 {
@@ -20,6 +21,9 @@ class RepositoryStatusChecker
         return count($openPullRequests);
     }
 
+    /**
+     * @return PullRequest[]
+     */
     public function getPullRequestsForDateRange(?string $startDate = null, ?string $endDate = null): array
     {
         return $this->gitHubClient->getPullRequests($startDate, $endDate);

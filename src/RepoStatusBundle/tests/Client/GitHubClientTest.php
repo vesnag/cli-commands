@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\RepoStatusBundle\Client;
+namespace App\Tests\RepoStatusBundle\Client;
 
-use App\RepoStatusBundle\Config\GitHubConfig;
-use App\RepoStatusBundle\Model\PullRequest;
+use App\RepoStatusBundle\Client\GitHubClient;
+use App\RepoStatusBundle\Util\GitHubApiUrlBuilder;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
@@ -14,36 +14,61 @@ class GitHubClientTest extends TestCase
 {
     public function testGetPullRequests(): void
     {
-        $config = $this->createMock(GitHubConfig::class);
-        $config->method('getOwner')->willReturn('owner');
-        $config->method('getRepo')->willReturn('repo');
-
-        // @todo Create Fake client.
         $httpClient = $this->createMock(HttpClientInterface::class);
+        $urlBuilder = $this->createMock(GitHubApiUrlBuilder::class);
+
+        $urlBuilder->method('constructApiUrl')
+            ->willReturn('https://api.github.com/repos/user/repo/pulls');
+
         $response = $this->createMock(ResponseInterface::class);
+        $response->method('toArray')
+            ->willReturn([
+                [
+                    'id' => 1,
+                    'title' => 'Test PR',
+                    'user' => ['login' => 'testuser'],
+                    'html_url' => 'https://github.com/user/repo/pull/1',
+                    'state' => 'open',
+                ],
+            ]);
 
-        $responseData = [
-            [
-                'id' => 1,
-                'title' => 'PR Title',
-                'user' => ['login' => 'author'],
-                'html_url' => 'https://github.com/owner/repo/pull/1',
-                'state' => 'open',
-            ],
-        ];
+        $httpClient->method('request')
+            ->willReturn($response);
 
-        $response->method('toArray')->willReturn($responseData);
-        $httpClient->method('request')->willReturn($response);
-
-        $client = new GitHubClient($config, $httpClient);
+        $client = new GitHubClient($httpClient, $urlBuilder);
 
         $pullRequests = $client->getPullRequests();
 
         $this->assertCount(1, $pullRequests);
-        $this->assertInstanceOf(PullRequest::class, $pullRequests[0]);
-        $this->assertEquals(1, $pullRequests[0]->id);
-        $this->assertEquals('PR Title', $pullRequests[0]->title);
-        $this->assertEquals('author', $pullRequests[0]->author);
-        $this->assertEquals('https://github.com/owner/repo/pull/1', $pullRequests[0]->url);
+        $this->assertSame(1, $pullRequests[0]->getId());
+        $this->assertSame('Test PR', $pullRequests[0]->getTitle());
+        $this->assertSame('testuser', $pullRequests[0]->getAuthor());
+        $this->assertSame('https://github.com/user/repo/pull/1', $pullRequests[0]->getUrl());
+        $this->assertSame('open', $pullRequests[0]->getState());
+    }
+
+    public function testGetCommitCount(): void
+    {
+        $httpClient = $this->createMock(HttpClientInterface::class);
+        $urlBuilder = $this->createMock(GitHubApiUrlBuilder::class);
+
+        $urlBuilder->method('constructApiUrl')
+            ->willReturn('https://api.github.com/repos/user/repo/commits');
+
+        $response = $this->createMock(ResponseInterface::class);
+        $response->method('toArray')
+            ->willReturn([
+                ['sha' => 'abc123'],
+                ['sha' => 'def456'],
+            ]);
+
+        $httpClient->method('request')
+            ->willReturn($response);
+
+        $client = new GitHubClient($httpClient, $urlBuilder);
+
+        $commitCount = $client->getCommitCount();
+
+        $this->assertSame(2, $commitCount);
     }
 }

@@ -5,6 +5,7 @@ parameters:
     gitlab_repo: '%env(GITLAB_REPO)%'
     bitbucket_owner: '%env(BITBUCKET_OWNER)%'
     bitbucket_repo: '%env(BITBUCKET_REPO)%'
+    github_api_base_url: 'https://api.github.com'
 
 imports:
     - { resource: '../src/RepoStatusBundle/Resources/config/services.yaml' }
@@ -16,6 +17,7 @@ services:
         bind:
             $owner: '%github_owner%'
             $repo: '%github_repo%'
+            $baseUrl: '%github_api_base_url%'
 
     App\:
         resource: '../src/*'

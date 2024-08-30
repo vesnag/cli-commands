@@ -2,12 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\RepoStatusBundle\Command;
+namespace App\Tests\RepoStatusBundle\Command;
 
 use App\RepoStatusBundle\Client\GitHubClient;
 use App\RepoStatusBundle\Command\CheckRepositoryStatusCommand;
-use App\RepoStatusBundle\Service\RepositoryStatusChecker;
+use App\RepoStatusBundle\Config\GitHubConfig;
 use App\RepoStatusBundle\Model\PullRequest;
+use App\RepoStatusBundle\Service\QuestionAsker;
+use App\RepoStatusBundle\Service\QuestionAnswerHandler;
+use App\RepoStatusBundle\Service\RepositoryStatusChecker;
+use App\RepoStatusBundle\Service\ResponseProcessor;
+use App\RepoStatusBundle\Service\MessageGenerator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -23,9 +28,23 @@ class CheckRepositoryStatusCommandTest extends TestCase
             new PullRequest(3, 'PR Title 3', 'author3', 'https://github.com/owner/repo/pull/3', 'open'),
         ]);
 
-        $statusChecker = new RepositoryStatusChecker($gitHubClient);
+        $repositoryStatusChecker = new RepositoryStatusChecker($gitHubClient);
 
-        $command = new CheckRepositoryStatusCommand($statusChecker);
+        $githubConfig = $this->createMock(GitHubConfig::class);
+        $questionAsker = $this->createMock(QuestionAsker::class);
+        $messageGenerator = new MessageGenerator();
+        $responseProcessor = new ResponseProcessor($repositoryStatusChecker, $messageGenerator);
+        $questionAnswerHandler = new QuestionAnswerHandler($responseProcessor);
+
+        $questionAsker->method('askQuestions')->willReturn([
+            CheckRepositoryStatusCommand::TIME_PERIOD => 'entire history',
+            CheckRepositoryStatusCommand::GET_COUNT_PRS => true,
+            CheckRepositoryStatusCommand::GET_COUNT_COMMITS => false,
+            CheckRepositoryStatusCommand::GENERATE_SLACK_REPORT => false,
+            CheckRepositoryStatusCommand::PUBLISH_TO_SLACK => false,
+        ]);
+
+        $command = new CheckRepositoryStatusCommand($githubConfig, $questionAsker, $questionAnswerHandler);
 
         $application = new Application();
         $application->add($command);
@@ -36,6 +55,6 @@ class CheckRepositoryStatusCommandTest extends TestCase
         $commandTester->execute([]);
 
         $output = $commandTester->getDisplay();
-        $this->assertStringContainsString('Open pull requests: 2', $output);
+        $this->assertStringContainsString('Pull requests for the selected period: 3', $output);
     }
 }

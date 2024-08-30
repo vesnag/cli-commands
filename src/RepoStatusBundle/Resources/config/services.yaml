@@ -19,8 +19,13 @@ services:
 
     App\RepoStatusBundle\Service\RepositoryStatusChecker: ~
 
+    App\RepoStatusBundle\Util\GitHubApiUrlBuilder:
+        arguments:
+            $baseUrl: '%github_api_base_url%'
+            $config: '@App\RepoStatusBundle\Config\GitHubConfig'
+
     App\RepoStatusBundle\Client\GitHubClient: ~
 
-    App\RepoStatusBundle\Client\BitbucketClient: ~
+    App\RepoStatusBundle\Client\BitbucketClient:
 
     App\RepoStatusBundle\Client\GitLabClient: ~
