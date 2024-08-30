@@ -42,8 +42,14 @@ class ResponseProcessor
             if ('' === $reportMessage) {
                 $reportMessage = $this->messageGenerator->generateReportMessage($params->timePeriodResponse, count($pullRequests), $commitCount);
             }
-            $this->messageSender->sendMessage($reportMessage);
-            $output->writeln('Message successfully posted to Slack.');
+            $sendMessageresponse = $this->messageSender->sendMessage($reportMessage);
+
+            if ($sendMessageresponse['success']) {
+                $output->writeln('Message successfully posted to Slack.');
+            } else {
+                $output->writeln('Failed to post message to Slack.');
+            }
+
         }
     }
 }

@@ -30,11 +30,14 @@ class SlackMessageSender implements MessageSender
                 'Content-Type' => 'application/json',
             ],
             'json' => [
-                'channel' => $this->config->getChannel(),
+                'channel' => sprintf('#%s', $this->config->getChannel()),
                 'text' => $message,
             ],
         ]);
 
-        return $response->toArray();
+        $responseData = $response->toArray();
+        $responseData['success'] = $response->getStatusCode() === 200;
+
+        return $responseData;
     }
 }

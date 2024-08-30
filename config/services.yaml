@@ -8,7 +8,7 @@ parameters:
     github_api_base_url: 'https://api.github.com'
     slack.bot_token: '%env(SLACK_BOT_TOKEN)%'
     slack.channel: '%env(SLACK_CHANNEL)%'
-    slack.api_base_url: 'https://slack.com/api/'
+    slack.api_base_url: 'https://slack.com/api'
 
 imports:
     - { resource: '../src/RepoStatusBundle/Resources/config/services.yaml' }
