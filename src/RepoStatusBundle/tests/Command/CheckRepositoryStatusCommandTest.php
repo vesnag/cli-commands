@@ -13,6 +13,7 @@ use App\RepoStatusBundle\Service\QuestionAnswerHandler;
 use App\RepoStatusBundle\Service\RepositoryStatusChecker;
 use App\RepoStatusBundle\Service\ResponseProcessor;
 use App\RepoStatusBundle\Service\MessageGenerator;
+use App\RepoStatusBundle\Service\MessageSender\MessageSender;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -33,7 +34,13 @@ class CheckRepositoryStatusCommandTest extends TestCase
         $githubConfig = $this->createMock(GitHubConfig::class);
         $questionAsker = $this->createMock(QuestionAsker::class);
         $messageGenerator = new MessageGenerator();
-        $responseProcessor = new ResponseProcessor($repositoryStatusChecker, $messageGenerator);
+        $messageSender = $this->createMock(MessageSender::class);
+
+        $responseProcessor = new ResponseProcessor(
+            $repositoryStatusChecker,
+            $messageGenerator,
+            $messageSender
+        );
         $questionAnswerHandler = new QuestionAnswerHandler($responseProcessor);
 
         $questionAsker->method('askQuestions')->willReturn([

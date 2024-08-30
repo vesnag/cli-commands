@@ -29,3 +29,18 @@ services:
     App\RepoStatusBundle\Client\BitbucketClient:
 
     App\RepoStatusBundle\Client\GitLabClient: ~
+
+    App\RepoStatusBundle\Config\SlackConfig:
+        arguments:
+            $slackBotToken: '%slack.bot_token%'
+            $slackChannel: '%slack_channel%'
+
+    App\RepoStatusBundle\Util\SlackApiUrlBuilder:
+        arguments:
+            $slackApiBaseUrl: '%slack.api_base_url%'
+
+    App\RepoStatusBundle\Service\MessageSender\SlackMessageSender:
+        arguments:
+            $httpClient: '@http_client'
+            $urlBuilder: '@App\RepoStatusBundle\Util\SlackApiUrlBuilder'
+            $config: '@App\RepoStatusBundle\Config\SlackConfig'

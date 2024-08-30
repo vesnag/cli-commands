@@ -6,6 +6,9 @@ parameters:
     bitbucket_owner: '%env(BITBUCKET_OWNER)%'
     bitbucket_repo: '%env(BITBUCKET_REPO)%'
     github_api_base_url: 'https://api.github.com'
+    slack.bot_token: '%env(SLACK_BOT_TOKEN)%'
+    slack.channel: '%env(SLACK_CHANNEL)%'
+    slack.api_base_url: 'https://slack.com/api/'
 
 imports:
     - { resource: '../src/RepoStatusBundle/Resources/config/services.yaml' }
@@ -18,6 +21,9 @@ services:
             $owner: '%github_owner%'
             $repo: '%github_repo%'
             $baseUrl: '%github_api_base_url%'
+            $slackBotToken: '%slack.bot_token%'
+            $slackChannel: '%slack.channel%'
+            $slackApiBaseUrl: '%slack.api_base_url%'
 
     App\:
         resource: '../src/*'

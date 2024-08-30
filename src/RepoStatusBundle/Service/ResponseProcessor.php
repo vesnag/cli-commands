@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace App\RepoStatusBundle\Service;
 
 use App\RepoStatusBundle\DTO\ResponseParams;
+use App\RepoStatusBundle\Service\MessageSender\MessageSender;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ResponseProcessor
 {
     public function __construct(
         private RepositoryStatusChecker $statusChecker,
-        private MessageGenerator $messageGenerator
+        private MessageGenerator $messageGenerator,
+        private MessageSender $messageSender
     ) {
     }
 
@@ -29,6 +31,7 @@ class ResponseProcessor
             $output->writeln('Number of commits: ' . $commitCount);
         }
 
+        $reportMessage = '';
         if ($params->generateReport) {
             $reportMessage = $this->messageGenerator->generateReportMessage($params->timePeriodResponse, count($pullRequests), $commitCount);
             $output->writeln('Report message:');
@@ -36,8 +39,11 @@ class ResponseProcessor
         }
 
         if ($params->publishToSlackResponse) {
-            $output->writeln('<comment>Publishing to Slack is not yet supported.</comment>');
+            if ('' === $reportMessage) {
+                $reportMessage = $this->messageGenerator->generateReportMessage($params->timePeriodResponse, count($pullRequests), $commitCount);
+            }
+            $this->messageSender->sendMessage($reportMessage);
+            $output->writeln('Message successfully posted to Slack.');
         }
     }
-
 }
