@@ -30,8 +30,7 @@
     },
    "autoload": {
         "psr-4": {
-            "App\\": "src/",
-            "AG\\AGHelloWorldBundle\\": "src/AG/AGHelloWorldBundle/"
+            "App\\": "src/"
         }
     },
     "autoload-dev": {
