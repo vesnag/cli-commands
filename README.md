@@ -14,12 +14,20 @@ php bin/console app:check-repository-status
 Variables can be configured via the .env file. The following variables are used:
 
 ```
-GITHUB_OWNER=''
-GITHUB_REPO=''
-GITLAB_OWNER=''
-GITLAB_REPO=''
-BITBUCKET_OWNER=''
-BITBUCKET_REPO=''
+#VCS Clients Configuration
+GITHUB_OWNER=github_owner
+GITHUB_REPO=github_repo
+GITLAB_OWNER='gitlab_owner
+GITLAB_REPO=gitlab_repo
+BITBUCKET_OWNER=bitbucket_owner
+BITBUCKET_REPO=bitbucker_repo
+GITHUB_API_BASE_URL=https://api.github.com
+
+# Slack Bot User OAuth Token
+SLACK_BOT_TOKEN=xoxp-******
+
+# Slack Configuration
+SLACK_CHANNEL=your-channel
 ```
 ---
 
