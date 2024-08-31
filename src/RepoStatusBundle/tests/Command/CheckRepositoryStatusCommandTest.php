@@ -6,7 +6,6 @@ namespace App\Tests\RepoStatusBundle\Command;
 
 use App\RepoStatusBundle\Client\GitHubClient;
 use App\RepoStatusBundle\Command\CheckRepositoryStatusCommand;
-use App\RepoStatusBundle\Config\GitHubConfig;
 use App\RepoStatusBundle\Model\PullRequest;
 use App\RepoStatusBundle\Service\QuestionCollector;
 use App\RepoStatusBundle\Service\QuestionAsker;
@@ -33,6 +32,7 @@ class CheckRepositoryStatusCommandTest extends TestCase
 
         $repositoryStatusChecker = new RepositoryStatusChecker($gitHubClient);
 
+        $questionCollector = $this->createMock(QuestionCollector::class);
         $questionAsker = $this->createMock(QuestionAsker::class);
 
         $messageGenerator = new MessageGenerator();
@@ -53,7 +53,7 @@ class CheckRepositoryStatusCommandTest extends TestCase
             'publish_to_slack' => false,
         ]);
 
-        $command = new CheckRepositoryStatusCommand($questionAsker, $questionAnswerHandler);
+        $command = new CheckRepositoryStatusCommand($questionCollector, $questionAsker, $questionAnswerHandler);
 
         $application = new Application();
         $application->add($command);
