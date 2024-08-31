@@ -49,7 +49,6 @@ class ResponseProcessor
             } else {
                 $output->writeln('Failed to post message to Slack.');
             }
-
         }
     }
 }

@@ -8,6 +8,7 @@ use App\RepoStatusBundle\Client\GitHubClient;
 use App\RepoStatusBundle\Command\CheckRepositoryStatusCommand;
 use App\RepoStatusBundle\Config\GitHubConfig;
 use App\RepoStatusBundle\Model\PullRequest;
+use App\RepoStatusBundle\Service\QuestionCollector;
 use App\RepoStatusBundle\Service\QuestionAsker;
 use App\RepoStatusBundle\Service\QuestionAnswerHandler;
 use App\RepoStatusBundle\Service\RepositoryStatusChecker;
@@ -22,6 +23,7 @@ class CheckRepositoryStatusCommandTest extends TestCase
 {
     public function testExecute(): void
     {
+        // Mock GitHubClient and its method
         $gitHubClient = $this->createMock(GitHubClient::class);
         $gitHubClient->method('getPullRequests')->willReturn([
             new PullRequest(1, 'PR Title 1', 'author1', 'https://github.com/owner/repo/pull/1', 'open'),
@@ -31,8 +33,8 @@ class CheckRepositoryStatusCommandTest extends TestCase
 
         $repositoryStatusChecker = new RepositoryStatusChecker($gitHubClient);
 
-        $githubConfig = $this->createMock(GitHubConfig::class);
         $questionAsker = $this->createMock(QuestionAsker::class);
+
         $messageGenerator = new MessageGenerator();
         $messageSender = $this->createMock(MessageSender::class);
 
@@ -44,14 +46,14 @@ class CheckRepositoryStatusCommandTest extends TestCase
         $questionAnswerHandler = new QuestionAnswerHandler($responseProcessor);
 
         $questionAsker->method('askQuestions')->willReturn([
-            CheckRepositoryStatusCommand::TIME_PERIOD => 'entire history',
-            CheckRepositoryStatusCommand::GET_COUNT_PRS => true,
-            CheckRepositoryStatusCommand::GET_COUNT_COMMITS => false,
-            CheckRepositoryStatusCommand::GENERATE_SLACK_REPORT => false,
-            CheckRepositoryStatusCommand::PUBLISH_TO_SLACK => false,
+            'time' => 'entire history',
+            'get_count_prs' => true,
+            'get_count_commits' => false,
+            'generate_slack_report' => false,
+            'publish_to_slack' => false,
         ]);
 
-        $command = new CheckRepositoryStatusCommand($githubConfig, $questionAsker, $questionAnswerHandler);
+        $command = new CheckRepositoryStatusCommand($questionAsker, $questionAnswerHandler);
 
         $application = new Application();
         $application->add($command);

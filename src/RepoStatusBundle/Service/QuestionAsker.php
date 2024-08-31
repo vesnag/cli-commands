@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace App\RepoStatusBundle\Service;
 
+use App\RepoStatusBundle\Question\QuestionInterface;
 use Symfony\Component\Console\Helper\HelperInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
-use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class QuestionAsker
 {
     /**
-     * @param array<string, ConfirmationQuestion|ChoiceQuestion> $questions
+     * @param QuestionInterface[] $questions
      * @return array<string, mixed>
      */
     public function askQuestions(array $questions, HelperInterface $helper, InputInterface $input, OutputInterface $output): array
@@ -25,13 +24,13 @@ class QuestionAsker
         }
 
         $responses = [];
-        foreach ($questions as $key => $question) {
-            $response = $helper->ask($input, $output, $question);
-            if ($key === 'confirm_repo_check' && false === $response) {
+        foreach ($questions as $question) {
+            $response = $helper->ask($input, $output, $question->createQuestion());
+            if ($question->getKey() === 'confirm_repo_check' && false === $response) {
                 $output->writeln('<comment>Operation cancelled by user.</comment>');
                 exit(Command::SUCCESS);
             }
-            $responses[$key] = $response;
+            $responses[$question->getKey()] = $response;
         }
         return $responses;
     }

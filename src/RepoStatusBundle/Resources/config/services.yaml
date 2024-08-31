@@ -1,21 +1,48 @@
+
+parameters:
+    github.owner: '%env(GITHUB_OWNER)%'
+    github.repo: '%env(GITHUB_REPO)%'
+    github.api_base_url: 'https://api.github.com'
+    gitlab:
+        owner: '%env(GITLAB_OWNER)%'
+        repo: '%env(GITLAB_REPO)%'
+    bitbucket:
+        owner: '%env(BITBUCKET_OWNER)%'
+        repo: '%env(BITBUCKET_REPO)%'
+    slack.bot_token: '%env(SLACK_BOT_TOKEN)%'
+    slack.channel: '%env(SLACK_CHANNEL)%'
+    slack.api_base_url: 'https://slack.com/api'
+
 services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            $owner: null
+            $repo: null
+            $questions: ['What is your name?', 'What is your favorite color?']
+
     App\RepoStatusBundle\Config\GitHubConfig:
-        arguments:
-            $owner: '%github_owner%'
-            $repo: '%github_repo%'
+        bind:
+            $owner: '%github.owner%'
+            $repo: '%github.repo%'
 
     App\RepoStatusBundle\Config\GitLabConfig:
-        arguments:
-            $owner: '%gitlab_owner%'
-            $repo: '%gitlab_repo%'
+        bind:
+            $owner: '%gitlab.owner%'
+            $repo: '%gitlab.repo%'
 
     App\RepoStatusBundle\Config\BitbucketConfig:
-        arguments:
-            $owner: '%bitbucket_owner%'
-            $repo: '%bitbucket_repo%'
+        bind:
+            $owner: '%bitbucket.owner%'
+            $repo: '%bitbucket.repo%'
 
     App\RepoStatusBundle\Command\CheckRepositoryStatusCommand:
         tags: ['console.command']
+        arguments:
+            $questionCollector: '@App\RepoStatusBundle\Service\QuestionCollector'
+            $questionAsker: '@App\RepoStatusBundle\Service\QuestionAsker'
+            $questionAnswerHandler: '@App\RepoStatusBundle\Service\QuestionAnswerHandler'
 
     App\RepoStatusBundle\Service\RepositoryStatusChecker: ~
 
@@ -26,7 +53,7 @@ services:
 
     App\RepoStatusBundle\Client\GitHubClient: ~
 
-    App\RepoStatusBundle\Client\BitbucketClient:
+    App\RepoStatusBundle\Client\BitbucketClient: ~
 
     App\RepoStatusBundle\Client\GitLabClient: ~
 
@@ -44,3 +71,40 @@ services:
             $httpClient: '@http_client'
             $urlBuilder: '@App\RepoStatusBundle\Util\SlackApiUrlBuilder'
             $config: '@App\RepoStatusBundle\Config\SlackConfig'
+
+    # Question services
+    App\RepoStatusBundle\Question\ConfirmRepoCheckQuestion:
+        tags: ['app.question']
+        bind:
+            $owner: '%github.owner%'
+            $repo: '%github.repo%'
+
+    App\RepoStatusBundle\Question\TimePeriodQuestion:
+        tags: ['app.question']
+        public: true
+
+    App\RepoStatusBundle\Question\GetCountPRsQuestion:
+        tags: ['app.question']
+        public: true
+
+    App\RepoStatusBundle\Question\GetCountCommitsQuestion:
+        tags: ['app.question']
+        public: true
+
+    App\RepoStatusBundle\Question\GenerateSlackReportQuestion:
+        tags: ['app.question']
+        public: true
+
+    App\RepoStatusBundle\Question\PublishToSlackQuestion:
+        tags: ['app.question']
+        public: true
+
+    App\RepoStatusBundle\Service\QuestionAsker: ~
+    App\RepoStatusBundle\Service\QuestionAnswerHandler:
+        arguments:
+            $responseProcessor: '@App\RepoStatusBundle\Service\ResponseProcessor'
+    App\RepoStatusBundle\Service\ResponseProcessor:
+        arguments:
+            $repositoryStatusChecker: '@App\RepoStatusBundle\Service\RepositoryStatusChecker'
+            $messageGenerator: '@App\RepoStatusBundle\Service\MessageGenerator'
+            $messageSender: '@App\RepoStatusBundle\Service\MessageSender\SlackMessageSender'
