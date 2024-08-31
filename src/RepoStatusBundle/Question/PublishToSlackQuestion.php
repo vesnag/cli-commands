@@ -20,4 +20,9 @@ class PublishToSlackQuestion implements QuestionInterface
     {
         return new ConfirmationQuestion('Do you want to publish this status to Slack? (yes/no) [no]', false);
     }
+
+    public function getReportData(): ?string
+    {
+        return null;
+    }
 }

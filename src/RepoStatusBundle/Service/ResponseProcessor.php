@@ -11,44 +11,64 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ResponseProcessor
 {
     public function __construct(
-        private RepositoryStatusChecker $statusChecker,
-        private MessageGenerator $messageGenerator,
-        private MessageSender $messageSender
+        private readonly RepositoryStatusChecker $statusChecker,
+        private readonly MessageGenerator $messageGenerator,
+        private readonly MessageSender $messageSender
     ) {
     }
 
     public function processResponses(ResponseParams $params, OutputInterface $output): void
     {
-        $pullRequests = [];
-        if ($params->getPrsResponse) {
-            $pullRequests = $this->statusChecker->getPullRequestsForDateRange($params->startDate, $params->endDate);
+        $pullRequests = $this->getPullRequestsIfRequested($params, $output);
+        $commitCount = $this->getCommitsIfRequested($params, $output);
+
+        $reportData = [
+            'time period' => $params->getTimePeriodResponse(),
+            'number of pull requests' => count($pullRequests),
+            'number of commits' => $commitCount,
+            // You can add more dynamic data here as new questions or metrics are added
+        ];
+
+        $reportMessage = $this->messageGenerator->generateReportMessage($reportData);
+        $output->writeln('Report message:');
+        $output->writeln($reportMessage);
+
+        if ($params->getPublishToSlackResponse()) {
+            $this->publishReportToSlack($reportMessage, $output);
+        }
+    }
+
+    private function getPullRequestsIfRequested(ResponseParams $params, OutputInterface $output): array
+    {
+        if ($params->getPrsResponse()) {
+            $pullRequests = $this->statusChecker->getPullRequestsForDateRange($params->getStartDate(), $params->getEndDate());
             $output->writeln('Pull requests for the selected period: ' . count($pullRequests));
+            return $pullRequests;
         }
 
-        $commitCount = 0;
-        if ($params->getCommitsResponse) {
-            $commitCount = $this->statusChecker->getCommitCount($params->startDate, $params->endDate);
+        return [];
+    }
+
+    private function getCommitsIfRequested(ResponseParams $params, OutputInterface $output): int
+    {
+        if ($params->getCommitsResponse()) {
+            $commitCount = $this->statusChecker->getCommitCount($params->getStartDate(), $params->getEndDate());
             $output->writeln('Number of commits: ' . $commitCount);
+            return $commitCount;
         }
 
-        $reportMessage = '';
-        if ($params->generateReport) {
-            $reportMessage = $this->messageGenerator->generateReportMessage($params->timePeriodResponse, count($pullRequests), $commitCount);
-            $output->writeln('Report message:');
-            $output->writeln($reportMessage);
+        return 0;
+    }
+
+    private function publishReportToSlack(string $reportMessage, OutputInterface $output): void
+    {
+        $sendMessageResponse = $this->messageSender->sendMessage($reportMessage);
+
+        if ($sendMessageResponse['success']) {
+            $output->writeln('Message successfully posted to Slack.');
+            return;
         }
 
-        if ($params->publishToSlackResponse) {
-            if ('' === $reportMessage) {
-                $reportMessage = $this->messageGenerator->generateReportMessage($params->timePeriodResponse, count($pullRequests), $commitCount);
-            }
-            $sendMessageresponse = $this->messageSender->sendMessage($reportMessage);
-
-            if ($sendMessageresponse['success']) {
-                $output->writeln('Message successfully posted to Slack.');
-            } else {
-                $output->writeln('Failed to post message to Slack.');
-            }
-        }
+        $output->writeln('Failed to post message to Slack.');
     }
 }

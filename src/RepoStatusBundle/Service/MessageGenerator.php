@@ -6,13 +6,23 @@ namespace App\RepoStatusBundle\Service;
 
 class MessageGenerator
 {
-    public function generateReportMessage(string $timePeriod, int $pullRequestCount, int $commitCount): string
+    /**
+     * Generates a report message based on the provided data.
+     *
+     * @param array<string, mixed> $reportData An associative array where keys are labels and values are the corresponding data.
+     * @return string The formatted report message.
+     */
+    public function generateReportMessage(array $reportData): string
     {
-        return sprintf(
-            "*Report for %s:*\n- *Number of pull requests:* %d\n- *Number of commits:* %d",
-            $timePeriod,
-            $pullRequestCount,
-            $commitCount
-        );
+        $reportLines = [];
+
+        foreach ($reportData as $label => $value) {
+            if (is_array($value)) {
+                $value = implode(', ', $value);
+            }
+            $reportLines[] = sprintf("*%s:* %s", ucfirst($label), $value);
+        }
+
+        return implode("\n", $reportLines);
     }
 }

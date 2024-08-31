@@ -11,6 +11,8 @@ use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 #[AsTaggedItem(index: 'app.question', priority: 95)]
 class TimePeriodQuestion implements QuestionInterface
 {
+    private string $selectedPeriod;
+
     public function getKey(): string
     {
         return 'time';
@@ -23,5 +25,15 @@ class TimePeriodQuestion implements QuestionInterface
             ['today', 'this week', 'entire history'],
             2
         );
+    }
+
+    public function setSelectedPeriod(string $period): void
+    {
+        $this->selectedPeriod = $period;
+    }
+
+    public function getReportData(): ?string
+    {
+        return sprintf('Selected time period: %s', $this->selectedPeriod);
     }
 }

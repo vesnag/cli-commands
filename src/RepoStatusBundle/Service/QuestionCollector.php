@@ -9,11 +9,17 @@ use App\RepoStatusBundle\Question\QuestionInterface;
 class QuestionCollector
 {
     /**
-     * @param QuestionInterface[] $questions
+     * @var QuestionInterface[]
      */
-    public function __construct(
-        private array $questions
-    ) {
+    private array $questions;
+
+    /**
+     * @param iterable<QuestionInterface> $questions
+     */
+    public function __construct(iterable $questions)
+    {
+        // Convert the iterable to an array
+        $this->questions = is_array($questions) ? $questions : iterator_to_array($questions);
     }
 
     /**

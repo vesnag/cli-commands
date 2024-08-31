@@ -36,7 +36,6 @@ class QuestionAnswerHandler
             $timePeriodResponse,
             ConvertTo::string($responses['get_count_prs'] ?? null, 'get_count_prs'),
             ConvertTo::string($responses['get_count_commits'] ?? null, 'get_count_commits'),
-            ConvertTo::string($responses['generate_slack_report'] ?? null, 'generate_slack_report'),
             ConvertTo::string($responses['publish_to_slack'] ?? null, 'publish_to_slack')
         );
 
