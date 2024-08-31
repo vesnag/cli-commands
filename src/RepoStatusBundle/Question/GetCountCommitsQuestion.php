@@ -6,7 +6,9 @@ namespace App\RepoStatusBundle\Question;
 
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 
+#[AsTaggedItem(index: 'app.question', priority: 65)]
 class GetCountCommitsQuestion implements QuestionInterface
 {
     public function getKey(): string

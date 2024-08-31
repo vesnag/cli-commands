@@ -21,3 +21,12 @@ services:
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
+
+    # Automatically register and tag all classes that implement QuestionInterface
+    App\RepoStatusBundle\Question\:
+        resource: '../src/RepoStatusBundle/Question/*'
+        tags: ['app.question']
+
+    App\RepoStatusBundle\Service\QuestionCollector:
+        arguments:
+            $questions: !tagged_iterator 'app.question'

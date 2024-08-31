@@ -16,6 +16,7 @@ class CheckRepositoryStatusCommand extends Command
     protected static string $defaultName = 'app:check-repository-status';
 
     public function __construct(
+        private QuestionCollector $questionCollector,
         private QuestionAsker $questionAsker,
         private QuestionAnswerHandler $questionAnswerHandler
     ) {
@@ -34,17 +35,7 @@ class CheckRepositoryStatusCommand extends Command
     {
         $questionHelper = $this->getHelper('question');
 
-        // @todo use DI
-         $collector = new \App\RepoStatusBundle\Service\QuestionCollector([
-            new \App\RepoStatusBundle\Question\ConfirmRepoCheckQuestion('test', 'test'),
-            new \App\RepoStatusBundle\Question\TimePeriodQuestion(),
-            new \App\RepoStatusBundle\Question\GetCountPRsQuestion(),
-            new \App\RepoStatusBundle\Question\GetCountCommitsQuestion(),
-            new \App\RepoStatusBundle\Question\GenerateSlackReportQuestion(),
-            new \App\RepoStatusBundle\Question\PublishToSlackQuestion(),
-         ]);
-
-        $questions = $collector->collect();
+        $questions = iterator_to_array($this->questionCollector->getQuestions());
 
         $responses = $this->questionAsker->askQuestions($questions, $questionHelper, $input, $output);
 

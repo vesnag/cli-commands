@@ -6,7 +6,9 @@ namespace App\RepoStatusBundle\Question;
 
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 
+#[AsTaggedItem(index: 'app.question', priority: 100)]
 class ConfirmRepoCheckQuestion implements QuestionInterface
 {
     private string $owner;

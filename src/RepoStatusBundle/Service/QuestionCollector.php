@@ -1,25 +1,17 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\RepoStatusBundle\Service;
-
-use App\RepoStatusBundle\Question\QuestionInterface;
 
 class QuestionCollector
 {
-    /**
-     * @param QuestionInterface[] $questions
-     */
-    public function __construct(
-        private array $questions = []
-    ) {
+    private $questions;
+
+    public function __construct(iterable $questions)
+    {
+        $this->questions = $questions;
     }
 
-    /**
-     * @return QuestionInterface[]
-     */
-    public function collect(): array
+    public function getQuestions(): iterable
     {
         return $this->questions;
     }
