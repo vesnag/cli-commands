@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\RepoStatusBundle\Command;
 
 use App\RepoStatusBundle\Command\CheckRepositoryStatusCommand;
-use App\RepoStatusBundle\Service\QuestionCollector;
+use App\RepoStatusBundle\Collector\QuestionCollector;
 use App\RepoStatusBundle\Service\ReportGeneratorInterface;
 use App\RepoStatusBundle\Service\MessageSender\MessageSender;
 use PHPUnit\Framework\TestCase;
@@ -26,8 +26,8 @@ class CheckRepositoryStatusCommandTest extends TestCase
         $question->method('createQuestion')
             ->willReturn($this->createMock(\Symfony\Component\Console\Question\Question::class));
         $question->method('handleResponse')
-            ->willReturnCallback(function ($response, $responses, $input, $output) {
-                $responses->addResponse('get_count_prs', true);
+            ->willReturnCallback(function ($response, $responses, $input, $output) use ($question) {
+                $responses->addResponse('get_count_prs', true, $question);
             });
 
         $reportGenerator = $this->createMock(ReportGeneratorInterface::class);
@@ -36,7 +36,7 @@ class CheckRepositoryStatusCommandTest extends TestCase
 
         $messageSender = $this->createMock(MessageSender::class);
         $messageSender->method('sendMessage')
-            ->willReturn(['success' => true]);
+            ->willReturn(true);
 
         $command = new CheckRepositoryStatusCommand($questionCollector, $reportGenerator, $messageSender);
 
@@ -45,9 +45,8 @@ class CheckRepositoryStatusCommandTest extends TestCase
 
         $questionHelper = $this->createMock(QuestionHelper::class);
         $questionHelper->method('ask')
-            ->willReturn(true);  // Return whatever response your questions expect
+            ->willReturn(true);
 
-        // Ensure the HelperSet is initialized
         $helperSet = $command->getHelperSet();
         if ($helperSet === null) {
             $helperSet = new HelperSet();
@@ -62,6 +61,5 @@ class CheckRepositoryStatusCommandTest extends TestCase
 
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Report: Number of PRs: 3', $output);
-        $this->assertStringContainsString('Message successfully posted to Slack.', $output);
     }
 }

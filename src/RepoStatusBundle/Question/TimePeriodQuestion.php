@@ -56,10 +56,9 @@ class TimePeriodQuestion implements QuestionInterface
             ->setSince($startDate)
             ->setUntil($endDate);
 
-
         $this->setSelectedPeriod($response);
 
-        $responses->addResponse($this->getKey(), $response);
+        $responses->addResponse($this->getKey(), $response, $this);
 
         return $response;
     }

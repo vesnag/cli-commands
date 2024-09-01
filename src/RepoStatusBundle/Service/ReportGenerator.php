@@ -20,10 +20,13 @@ final class ReportGenerator implements ReportGeneratorInterface
         $reportLines = [];
 
         foreach ($responses->all() as $key => $response) {
+            $question = $responses->getQuestion($key);
+            $reportData = $question ? $question->getReportData() : ConvertTo::string($response, $key);
+
             $reportLines[] = sprintf(
                 "*%s:* %s",
                 ucfirst(str_replace('_', ' ', $key)),
-                ConvertTo::string($response, $key)
+                $reportData
             );
         }
 

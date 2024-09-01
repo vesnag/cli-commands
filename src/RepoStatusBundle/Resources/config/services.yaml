@@ -39,7 +39,7 @@ services:
     App\RepoStatusBundle\Command\CheckRepositoryStatusCommand:
         tags: ['console.command']
         arguments:
-            $questionCollector: '@App\RepoStatusBundle\Service\QuestionCollector'
+            $questionCollector: '@App\RepoStatusBundle\Collector\QuestionCollector'
             $reportGenerator: '@App\RepoStatusBundle\Service\ReportGenerator'
 
     App\RepoStatusBundle\Service\RepositoryStatusChecker: ~

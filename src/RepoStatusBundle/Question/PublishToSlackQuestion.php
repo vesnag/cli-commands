@@ -29,7 +29,7 @@ final class PublishToSlackQuestion implements QuestionInterface
 
     public function handleResponse(mixed $response, ResponseCollection $responses, InputInterface $input, OutputInterface $output): mixed
     {
-        $responses->addResponse($this->getKey(), $response);
+        $responses->addResponse($this->getKey(), $response, $this);
         return $response;
     }
 

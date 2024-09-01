@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\RepoStatusBundle\Command;
 
 use App\RepoStatusBundle\Collection\ResponseCollection;
-use App\RepoStatusBundle\Service\QuestionCollector;
+use App\RepoStatusBundle\Collector\QuestionCollector;
 use App\RepoStatusBundle\Service\ReportGeneratorInterface;
 use App\RepoStatusBundle\Service\MessageSender\MessageSender;
 use Symfony\Component\Console\Command\Command;
@@ -49,17 +49,19 @@ final class CheckRepositoryStatusCommand extends Command
         $reportMessage = $this->reportGenerator->generateReportMessage($responses);
 
         if ($responses->getResponse('publish_to_slack')) {
-            $sendMessageResponse = $this->messageSender->sendMessage($reportMessage);
-
-            if ($sendMessageResponse['success']) {
-                $output->writeln('Message successfully posted to Slack.');
-            } else {
-                $output->writeln('Failed to post message to Slack.');
-            }
+            $this->sendSlackMessage($reportMessage, $output);
         }
 
         $output->writeln($reportMessage);
 
         return Command::SUCCESS;
+    }
+
+    private function sendSlackMessage(string $reportMessage, OutputInterface $output): void
+    {
+        $sendMessageSuccess = $this->messageSender->sendMessage($reportMessage);
+
+        $message = $sendMessageSuccess ? 'Message successfully posted to Slack.' : 'Failed to post message to Slack.';
+        $output->writeln($message);
     }
 }

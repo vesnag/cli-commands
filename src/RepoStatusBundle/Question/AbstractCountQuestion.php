@@ -35,7 +35,7 @@ abstract class AbstractCountQuestion implements QuestionInterface
         if ($response === true) {
             $this->count = $this->getCount();
             $output->writeln((string) $this->getReportData());
-            $responses->addResponse($this->getKey(), $this->count);
+            $responses->addResponse($this->getKey(), $response, $this);
         }
 
         return $response;

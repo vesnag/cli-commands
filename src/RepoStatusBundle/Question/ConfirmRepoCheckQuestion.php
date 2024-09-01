@@ -15,6 +15,8 @@ use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 #[AsTaggedItem(index: 'app.question', priority: 200)]
 class ConfirmRepoCheckQuestion implements QuestionInterface
 {
+    private const GITHUB_URL_FORMAT = 'https://github.com/%s/%s';
+
     public function __construct(
         private readonly string $owner,
         private readonly string $repo,
@@ -46,7 +48,7 @@ class ConfirmRepoCheckQuestion implements QuestionInterface
             exit(Command::SUCCESS);
         }
 
-        $responses->addResponse($this->getKey(), $response);
+        $responses->addResponse($this->getKey(), $response, $this);
 
         return $response;
     }
@@ -58,6 +60,6 @@ class ConfirmRepoCheckQuestion implements QuestionInterface
 
     public function getRepositoryLink(): string
     {
-        return sprintf('https://github.com/%s/%s', $this->owner, $this->repo);
+        return sprintf(self::GITHUB_URL_FORMAT, $this->owner, $this->repo);
     }
 }

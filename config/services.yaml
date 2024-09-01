@@ -27,6 +27,6 @@ services:
         resource: '../src/RepoStatusBundle/Question/*'
         tags: ['app.question']
 
-    App\RepoStatusBundle\Service\QuestionCollector:
+    App\RepoStatusBundle\Collector\QuestionCollector:
         arguments:
             $questions: !tagged_iterator 'app.question'

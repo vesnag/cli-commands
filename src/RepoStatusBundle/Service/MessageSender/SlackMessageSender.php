@@ -17,10 +17,7 @@ class SlackMessageSender implements MessageSender
     ) {
     }
 
-    /**
-     * @return array<string, array<string, string>>
-     */
-    public function sendMessage(string $message): array
+    public function sendMessage(string $message): bool
     {
         $apiUrl = $this->urlBuilder->constructApiUrl('chat.postMessage');
 
@@ -35,9 +32,6 @@ class SlackMessageSender implements MessageSender
             ],
         ]);
 
-        $responseData = $response->toArray();
-        $responseData['success'] = $response->getStatusCode() === 200;
-
-        return $responseData;
+        return $response->getStatusCode() === 200;
     }
 }
