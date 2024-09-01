@@ -6,16 +6,14 @@ namespace App\Tests\RepoStatusBundle\Command;
 
 use App\RepoStatusBundle\Client\GitHubClient;
 use App\RepoStatusBundle\Command\CheckRepositoryStatusCommand;
+use App\RepoStatusBundle\Collection\ResponseCollection;
 use App\RepoStatusBundle\Model\PullRequest;
 use App\RepoStatusBundle\Service\QuestionCollector;
-use App\RepoStatusBundle\Service\QuestionAsker;
-use App\RepoStatusBundle\Service\QuestionAnswerHandler;
-use App\RepoStatusBundle\Service\RepositoryStatusChecker;
-use App\RepoStatusBundle\Service\ResponseProcessor;
-use App\RepoStatusBundle\Service\MessageGenerator;
+use App\RepoStatusBundle\Service\ReportGeneratorInterface;
 use App\RepoStatusBundle\Service\MessageSender\MessageSender;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class CheckRepositoryStatusCommandTest extends TestCase
@@ -24,46 +22,56 @@ class CheckRepositoryStatusCommandTest extends TestCase
     {
         // Mock GitHubClient and its method
         $gitHubClient = $this->createMock(GitHubClient::class);
-        $gitHubClient->method('getPullRequests')->willReturn([
-            new PullRequest(1, 'PR Title 1', 'author1', 'https://github.com/owner/repo/pull/1', 'open'),
-            new PullRequest(2, 'PR Title 2', 'author2', 'https://github.com/owner/repo/pull/2', 'closed'),
-            new PullRequest(3, 'PR Title 3', 'author3', 'https://github.com/owner/repo/pull/3', 'open'),
-        ]);
 
-        $repositoryStatusChecker = new RepositoryStatusChecker($gitHubClient);
-
+        // Mock QuestionCollector to provide a list of questions
         $questionCollector = $this->createMock(QuestionCollector::class);
-        $questionAsker = $this->createMock(QuestionAsker::class);
+        $question = $this->createMock(\App\RepoStatusBundle\Question\QuestionInterface::class);
 
-        $messageGenerator = new MessageGenerator();
+        $questionCollector->method('getQuestions')->willReturn([$question]);
+
+        // Set up Question behavior
+        $question->method('createQuestion')
+            ->willReturn($this->createMock(\Symfony\Component\Console\Question\Question::class));
+        $question->method('handleResponse')
+            ->willReturnCallback(function ($response, $responses, $input, $output) {
+                $responses->addResponse('get_count_prs', true);
+            });
+
+        // Mock ReportGeneratorInterface to generate a report message
+        $reportGenerator = $this->createMock(ReportGeneratorInterface::class);
+        $reportGenerator->method('generateReportMessage')
+            ->willReturn('Report: Number of PRs: 3');
+
+        // Mock MessageSender
         $messageSender = $this->createMock(MessageSender::class);
+        $messageSender->method('sendMessage')
+            ->willReturn(['success' => true]);
 
-        $responseProcessor = new ResponseProcessor(
-            $repositoryStatusChecker,
-            $messageGenerator,
-            $messageSender
-        );
-        $questionAnswerHandler = new QuestionAnswerHandler($responseProcessor);
+        // Instantiate the command with the necessary services
+        $command = new CheckRepositoryStatusCommand($questionCollector, $reportGenerator, $messageSender);
 
-        $questionAsker->method('askQuestions')->willReturn([
-            'time' => 'entire history',
-            'get_count_prs' => true,
-            'get_count_commits' => false,
-            'generate_slack_report' => false,
-            'publish_to_slack' => false,
-        ]);
-
-        $command = new CheckRepositoryStatusCommand($questionCollector, $questionAsker, $questionAnswerHandler);
-
+        // Set up the Symfony Console application and add the command
         $application = new Application();
         $application->add($command);
 
+        // Mock the QuestionHelper
+        $questionHelper = $this->createMock(QuestionHelper::class);
+        $questionHelper->method('ask')
+            ->willReturn(true);  // Return whatever response your questions expect
+
+        // Add the QuestionHelper to the command
+        $command->getHelperSet()->set($questionHelper, 'question');
+
+        // Find the command and prepare the CommandTester
         $command = $application->find('app:check-repository-status');
         $commandTester = new CommandTester($command);
 
+        // Execute the command
         $commandTester->execute([]);
 
+        // Get the output and make assertions
         $output = $commandTester->getDisplay();
-        $this->assertStringContainsString('Pull requests for the selected period: 3', $output);
+        $this->assertStringContainsString('Report: Number of PRs: 3', $output);
+        $this->assertStringContainsString('Message successfully posted to Slack.', $output);
     }
 }

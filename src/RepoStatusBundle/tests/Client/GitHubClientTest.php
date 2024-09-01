@@ -67,7 +67,7 @@ class GitHubClientTest extends TestCase
 
         $client = new GitHubClient($httpClient, $urlBuilder);
 
-        $commitCount = $client->getCommitCount();
+        $commitCount = $client->getCommitsCount();
 
         $this->assertSame(2, $commitCount);
     }

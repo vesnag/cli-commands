@@ -40,8 +40,7 @@ services:
         tags: ['console.command']
         arguments:
             $questionCollector: '@App\RepoStatusBundle\Service\QuestionCollector'
-            $questionAsker: '@App\RepoStatusBundle\Service\QuestionAsker'
-            $questionAnswerHandler: '@App\RepoStatusBundle\Service\QuestionAnswerHandler'
+            $reportGenerator: '@App\RepoStatusBundle\Service\ReportGenerator'
 
     App\RepoStatusBundle\Service\RepositoryStatusChecker: ~
 
@@ -72,11 +71,3 @@ services:
             $config: '@App\RepoStatusBundle\Config\SlackConfig'
 
     App\RepoStatusBundle\Service\QuestionAsker: ~
-    App\RepoStatusBundle\Service\QuestionAnswerHandler:
-        arguments:
-            $responseProcessor: '@App\RepoStatusBundle\Service\ResponseProcessor'
-    App\RepoStatusBundle\Service\ResponseProcessor:
-        arguments:
-            $repositoryStatusChecker: '@App\RepoStatusBundle\Service\RepositoryStatusChecker'
-            $messageGenerator: '@App\RepoStatusBundle\Service\MessageGenerator'
-            $messageSender: '@App\RepoStatusBundle\Service\MessageSender\SlackMessageSender'

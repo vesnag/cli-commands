@@ -4,22 +4,21 @@ declare(strict_types=1);
 
 namespace App\RepoStatusBundle\Question;
 
-use Symfony\Component\Console\Question\Question;
+use App\RepoStatusBundle\Collection\ResponseCollection;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Question\Question;
 use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 
-#[AsTaggedItem(index: 'app.question', priority: 100)]
+#[AsTaggedItem(index: 'app.question', priority: 200)]
 class ConfirmRepoCheckQuestion implements QuestionInterface
 {
-    private string $owner;
-    private string $repo;
-    private bool $confirmed;
-
-    public function __construct(string $owner, string $repo)
-    {
-        $this->owner = $owner;
-        $this->repo = $repo;
-        $this->confirmed = false; // Default to false until confirmed by user
+    public function __construct(
+        private readonly string $owner,
+        private readonly string $repo,
+    ) {
     }
 
     public function getKey(): string
@@ -39,18 +38,26 @@ class ConfirmRepoCheckQuestion implements QuestionInterface
         );
     }
 
-    public function setConfirmed(bool $confirmed): void
+    public function handleResponse(mixed $response, ResponseCollection $responses, InputInterface $input, OutputInterface $output): mixed
     {
-        $this->confirmed = $confirmed;
+
+        if (false === $response) {
+            $output->writeln('<comment>Operation cancelled by user.</comment>');
+            exit(Command::SUCCESS);
+        }
+
+        $responses->addResponse($this->getKey(), $response);
+
+        return $response;
     }
 
     public function getReportData(): ?string
     {
-        return sprintf(
-            'Repository check for %s/%s was %s.',
-            $this->owner,
-            $this->repo,
-            $this->confirmed ? 'confirmed' : 'not confirmed'
-        );
+        return sprintf('Report for repository: %s', $this->getRepositoryLink());
+    }
+
+    public function getRepositoryLink(): string
+    {
+        return sprintf('https://github.com/%s/%s', $this->owner, $this->repo);
     }
 }

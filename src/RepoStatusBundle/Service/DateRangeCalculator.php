@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\RepoStatusBundle\Service;
 
-class DateRangeCalculator
+final class DateRangeCalculator
 {
     /**
      * Calculates the start and end date based on the given time period.
