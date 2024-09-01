@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\RepoStatusBundle\Service;
 
 use App\RepoStatusBundle\Collection\ResponseCollection;
+use App\Utils\ConvertTo;
 
 final class ReportGenerator implements ReportGeneratorInterface
 {
@@ -19,7 +20,11 @@ final class ReportGenerator implements ReportGeneratorInterface
         $reportLines = [];
 
         foreach ($responses->all() as $key => $response) {
-            $reportLines[] = sprintf("*%s:* %s", ucfirst(str_replace('_', ' ', $key)), $response);
+            $reportLines[] = sprintf(
+                "*%s:* %s",
+                ucfirst(str_replace('_', ' ', $key)),
+                ConvertTo::string($response, $key)
+            );
         }
 
         return implode("\n", $reportLines);

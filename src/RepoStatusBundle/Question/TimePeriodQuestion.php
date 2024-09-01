@@ -46,13 +46,12 @@ class TimePeriodQuestion implements QuestionInterface
 
     public function handleResponse(mixed $response, ResponseCollection $responses, InputInterface $input, OutputInterface $output): mixed
     {
-        if (!in_array($response, ['today', 'this week', 'entire history'])) {
+        if (!is_string($response) || !in_array($response, ['today', 'this week', 'entire history'])) {
             throw new RuntimeException('Invalid time period selected.');
         }
 
         [$startDate, $endDate] = $this->dateRangeCalculator->calculateDateRange($response);
 
-        // Set the calculated dates in GitHubQueryParams
         $this->gitHubQueryParams
             ->setSince($startDate)
             ->setUntil($endDate);

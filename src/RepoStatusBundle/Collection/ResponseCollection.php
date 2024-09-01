@@ -8,6 +8,9 @@ use InvalidArgumentException;
 
 class ResponseCollection
 {
+    /**
+     * @var array<string, mixed>
+     */
     private array $responses = [];
 
     /**

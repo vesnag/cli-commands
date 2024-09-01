@@ -8,6 +8,10 @@ class GitHubQueryParams
 {
     private ?string $since = null;
     private ?string $until = null;
+
+    /**
+     * @var array<string, string>
+     */
     private array $additionalParams = [];
 
     public function setSince(?string $since): self
@@ -38,6 +42,9 @@ class GitHubQueryParams
         return $this;
     }
 
+    /**
+     * @return array<string, string|null>
+     */
     public function getParams(): array
     {
         $params = array_filter([

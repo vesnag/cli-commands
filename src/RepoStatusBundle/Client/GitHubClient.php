@@ -109,15 +109,17 @@ class GitHubClient implements VcsClient
      */
     private function mapToCommit(array $commitData): Commit
     {
-        $author = is_array($commitData['commit']['author'] ?? null) ? $commitData['commit']['author'] : [];
+        $commit = is_array($commitData['commit'] ?? null) ? $commitData['commit'] : [];
+        $author = is_array($commit['author'] ?? null) ? $commit['author'] : [];
         $authorName = ArrayUtils::get($author, 'name', '');
+        $authorDate = ArrayUtils::get($author, 'date', '');
 
         return new Commit(
-            id: ConvertTo::int($commitData['sha'], 'sha'),
-            message: ConvertTo::string($commitData['commit']['message'], 'commit.message'),
+            id: ConvertTo::int($commitData['sha'] ?? '', 'sha'),
+            message: ConvertTo::string($commit['message'] ?? '', 'commit.message'),
             author: ConvertTo::string($authorName, 'commit.author.name'),
-            url: ConvertTo::string($commitData['html_url'], 'html_url'),
-            date: new \DateTime($commitData['commit']['author']['date'])
+            url: ConvertTo::string($commitData['html_url'] ?? '', 'html_url'),
+            date: new \DateTime(is_string($authorDate) ? $authorDate : 'now')
         );
     }
 }
