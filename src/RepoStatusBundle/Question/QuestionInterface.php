@@ -4,31 +4,44 @@ declare(strict_types=1);
 
 namespace App\RepoStatusBundle\Question;
 
-use App\RepoStatusBundle\Collection\ResponseCollection;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
+use App\RepoStatusBundle\Collection\ResponseCollection;
 
+/**
+ * @template T
+ */
 interface QuestionInterface
 {
-    public function getKey(): string;
-    public function createQuestion(): Question;
-
     /**
-     * Validate and process the response after the question is asked.
+     * Get the key for the question.
      *
-     * @param mixed $response The response provided by the user.
-     * @param ResponseCollection $responses The collection of all collected responses.
-     * @param InputInterface $input The input interface.
-     * @param OutputInterface $output The output interface.
-     * @return mixed Processed response, or any action based on the response.
+     * @return string
      */
-    public function handleResponse(mixed $response, ResponseCollection $responses, InputInterface $input, OutputInterface $output): mixed;
+    public function getKey(): string;
 
     /**
-     * Get the report data as a formatted string.
+     * Create the question.
      *
-     * @return ?string The formatted report data, or null if no data should be included in the report.
+     * @return \Symfony\Component\Console\Question\Question
+     */
+    public function createQuestion(): \Symfony\Component\Console\Question\Question;
+
+    /**
+     * Handle the response for the question.
+     *
+     * @param T $response
+     * @param ResponseCollection<T> $responses
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return T
+     */
+    public function handleResponse($response, ResponseCollection $responses, InputInterface $input, OutputInterface $output);
+
+    /**
+     * Get the report data for the question.
+     *
+     * @return string|null
      */
     public function getReportData(): ?string;
 }

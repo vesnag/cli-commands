@@ -5,62 +5,54 @@ declare(strict_types=1);
 namespace App\RepoStatusBundle\Question;
 
 use App\RepoStatusBundle\Collection\ResponseCollection;
-use App\RepoStatusBundle\DTO\GitHubQueryParams;
-use App\RepoStatusBundle\Service\DateRangeCalculator;
-use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 
+/**
+ * @implements QuestionInterface<string>
+ */
 #[AsTaggedItem(index: 'app.question', priority: 95)]
 class TimePeriodQuestion implements QuestionInterface
 {
     private string $selectedPeriod;
 
-    public function __construct(
-        private GitHubQueryParams $gitHubQueryParams,
-        private DateRangeCalculator $dateRangeCalculator
-    ) {
-    }
-
     public function getKey(): string
     {
-        return 'time';
+        return 'time_period';
     }
 
     public function createQuestion(): Question
     {
         return new ChoiceQuestion(
-            'Select time period [entire history]',
-            ['today', 'this week', 'entire history'],
-            2
+            'Please select the time period:',
+            ['Last 24 hours', 'Last 7 days', 'Last 30 days'],
+            0
         );
     }
 
-    public function setSelectedPeriod(string $period): void
+    /**
+     * Handle the response for the time period question.
+     *
+     * @param string $response
+     * @param ResponseCollection<string> $responses
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return string
+     */
+    public function handleResponse($response, ResponseCollection $responses, InputInterface $input, OutputInterface $output): string
     {
-        $this->selectedPeriod = $period;
-    }
-
-    public function handleResponse(mixed $response, ResponseCollection $responses, InputInterface $input, OutputInterface $output): mixed
-    {
-        if (!is_string($response) || !in_array($response, ['today', 'this week', 'entire history'])) {
-            throw new RuntimeException('Invalid time period selected.');
-        }
-
-        [$startDate, $endDate] = $this->dateRangeCalculator->calculateDateRange($response);
-
-        $this->gitHubQueryParams
-            ->setSince($startDate)
-            ->setUntil($endDate);
-
-        $this->setSelectedPeriod($response);
-
+        $this->selectedPeriod = $response;
         $responses->addResponse($this->getKey(), $response, $this);
 
         return $response;
+    }
+
+    public function getSelectedPeriod(): string
+    {
+        return $this->selectedPeriod;
     }
 
     public function getReportData(): ?string

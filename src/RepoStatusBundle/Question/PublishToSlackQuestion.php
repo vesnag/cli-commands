@@ -10,12 +10,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 
-#[AsTaggedItem(index: 'app.question', priority: -100)]
-final class PublishToSlackQuestion implements QuestionInterface
+/**
+ * @implements QuestionInterface<bool>
+ */
+#[AsTaggedItem(index: 'app.question', priority: 100)]
+class PublishToSlackQuestion implements QuestionInterface
 {
-    public function __construct()
-    {
-    }
+    private bool $publishToSlack;
 
     public function getKey(): string
     {
@@ -24,13 +25,32 @@ final class PublishToSlackQuestion implements QuestionInterface
 
     public function createQuestion(): ConfirmationQuestion
     {
-        return new ConfirmationQuestion('Do you want to publish this status to Slack? (yes/no) [no]', false);
+        return new ConfirmationQuestion(
+            'Do you want to publish the report to Slack? (yes/no) [yes]',
+            true
+        );
     }
 
-    public function handleResponse(mixed $response, ResponseCollection $responses, InputInterface $input, OutputInterface $output): mixed
+    /**
+     * Handle the response for the publish to Slack question.
+     *
+     * @param bool $response
+     * @param ResponseCollection<bool> $responses
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return bool
+     */
+    public function handleResponse($response, ResponseCollection $responses, InputInterface $input, OutputInterface $output): bool
     {
+        $this->publishToSlack = $response;
         $responses->addResponse($this->getKey(), $response, $this);
+
         return $response;
+    }
+
+    public function shouldPublishToSlack(): bool
+    {
+        return $this->publishToSlack;
     }
 
     public function getReportData(): ?string

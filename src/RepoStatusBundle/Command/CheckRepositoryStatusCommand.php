@@ -14,11 +14,17 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 
+#[AsCommand(name: 'app:check-repository-status')]
 final class CheckRepositoryStatusCommand extends Command
 {
     protected static string $defaultName = 'app:check-repository-status';
 
+    /**
+     * @param QuestionCollector<mixed> $questionCollector
+     * @param ReportGeneratorInterface<string> $reportGenerator
+     */
     public function __construct(
         private readonly QuestionCollector $questionCollector,
         private readonly ReportGeneratorInterface $reportGenerator,
@@ -30,7 +36,6 @@ final class CheckRepositoryStatusCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setName(self::$defaultName)
             ->setDescription('Checks the status of the repository and sends a notification.')
             ->setHelp('This command checks the status of the repository and sends a notification.');
     }
@@ -40,17 +45,17 @@ final class CheckRepositoryStatusCommand extends Command
         /** @var QuestionHelper $questionHelper */
         $questionHelper = $this->getHelper('question');
 
-        $questions = iterator_to_array($this->questionCollector->getQuestions());
-        $responses = new ResponseCollection();
+        /** @var ResponseCollection<mixed> $responseCollection */
+        $responseCollection = new ResponseCollection();
 
-        foreach ($questions as $question) {
+        foreach ($this->questionCollector->getQuestions() as $question) {
             $response = $questionHelper->ask($input, $output, $question->createQuestion());
-            $this->handleQuestionResponse($question, $response, $responses, $input, $output);
+            $this->handleQuestionResponse($question, $response, $responseCollection, $input, $output);
         }
 
-        $reportMessage = $this->reportGenerator->generateReportMessage($responses);
+        $reportMessage = $this->reportGenerator->generateReportMessage($responseCollection);
 
-        if ($responses->getResponse('publish_to_slack')) {
+        if ($responseCollection->getResponse('publish_to_slack')) {
             $this->sendSlackMessage($reportMessage, $output);
         }
 
@@ -59,9 +64,19 @@ final class CheckRepositoryStatusCommand extends Command
         return Command::SUCCESS;
     }
 
+    /**
+     * Handles the response for a given question.
+     *
+     * @param QuestionInterface<mixed> $question
+     * @param mixed $response
+     * @param ResponseCollection<mixed> $responses
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
+     */
     private function handleQuestionResponse(
         QuestionInterface $question,
-        mixed $response,
+        $response,
         ResponseCollection $responses,
         InputInterface $input,
         OutputInterface $output

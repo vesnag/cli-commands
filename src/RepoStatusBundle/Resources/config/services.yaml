@@ -36,12 +36,6 @@ services:
             $owner: '%bitbucket.owner%'
             $repo: '%bitbucket.repo%'
 
-    App\RepoStatusBundle\Command\CheckRepositoryStatusCommand:
-        tags: ['console.command']
-        arguments:
-            $questionCollector: '@App\RepoStatusBundle\Collector\QuestionCollector'
-            $reportGenerator: '@App\RepoStatusBundle\Service\ReportGenerator'
-
     App\RepoStatusBundle\Service\RepositoryStatusChecker: ~
 
     App\RepoStatusBundle\Util\GitHubApiUrlBuilder:

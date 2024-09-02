@@ -9,9 +9,11 @@ use App\RepoStatusBundle\Exception\OperationCancelledException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Symfony\Component\Console\Question\Question;
 use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 
+/**
+ * @implements QuestionInterface<bool>
+ */
 #[AsTaggedItem(index: 'app.question', priority: 200)]
 class ConfirmRepoCheckQuestion implements QuestionInterface
 {
@@ -28,7 +30,7 @@ class ConfirmRepoCheckQuestion implements QuestionInterface
         return 'confirm_repo_check';
     }
 
-    public function createQuestion(): Question
+    public function createQuestion(): ConfirmationQuestion
     {
         return new ConfirmationQuestion(
             sprintf(
@@ -40,10 +42,19 @@ class ConfirmRepoCheckQuestion implements QuestionInterface
         );
     }
 
-    public function handleResponse(mixed $response, ResponseCollection $responses, InputInterface $input, OutputInterface $output): mixed
+    /**
+     * Handle the response for the confirmation question.
+     *
+     * @param bool $response
+     * @param ResponseCollection<bool> $responses
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return mixed
+     * @throws OperationCancelledException if the user cancels the operation.
+     */
+    public function handleResponse($response, ResponseCollection $responses, InputInterface $input, OutputInterface $output): mixed
     {
-
-        if (false === $response) {
+        if (!$response) {
             $output->writeln('<comment>Operation cancelled by user.</comment>');
             throw new OperationCancelledException();
         }

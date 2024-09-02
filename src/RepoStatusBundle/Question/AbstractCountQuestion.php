@@ -11,6 +11,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
+/**
+ * @implements QuestionInterface<bool>
+ */
 abstract class AbstractCountQuestion implements QuestionInterface
 {
     private int $count = 0;
@@ -30,7 +33,16 @@ abstract class AbstractCountQuestion implements QuestionInterface
         return new ConfirmationQuestion($this->getMessage(), true);
     }
 
-    public function handleResponse(mixed $response, ResponseCollection $responses, InputInterface $input, OutputInterface $output): mixed
+    /**
+     * Handle the response for the confirmation question.
+     *
+     * @param bool $response The response provided by the user.
+     * @param ResponseCollection<bool> $responses The collection of responses.
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return bool
+     */
+    public function handleResponse($response, ResponseCollection $responses, InputInterface $input, OutputInterface $output): bool
     {
         if ($response === true) {
             $this->count = $this->getCount();

@@ -6,15 +6,18 @@ namespace App\RepoStatusBundle\Collector;
 
 use App\RepoStatusBundle\Question\QuestionInterface;
 
+/**
+ * @template T
+ */
 class QuestionCollector
 {
     /**
-     * @var QuestionInterface[]
+     * @var QuestionInterface<T>[]
      */
     private array $questions;
 
     /**
-     * @param iterable<QuestionInterface> $questions
+     * @param iterable<QuestionInterface<T>> $questions
      */
     public function __construct(iterable $questions)
     {
@@ -22,7 +25,7 @@ class QuestionCollector
     }
 
     /**
-     * @return QuestionInterface[]
+     * @return QuestionInterface<T>[]
      */
     public function getQuestions(): array
     {
