@@ -6,6 +6,8 @@ namespace App\RepoStatusBundle\Command;
 
 use App\RepoStatusBundle\Collection\ResponseCollection;
 use App\RepoStatusBundle\Collector\QuestionCollector;
+use App\RepoStatusBundle\Exception\OperationCancelledException;
+use App\RepoStatusBundle\Question\QuestionInterface;
 use App\RepoStatusBundle\Service\ReportGeneratorInterface;
 use App\RepoStatusBundle\Service\MessageSender\MessageSender;
 use Symfony\Component\Console\Command\Command;
@@ -43,7 +45,7 @@ final class CheckRepositoryStatusCommand extends Command
 
         foreach ($questions as $question) {
             $response = $questionHelper->ask($input, $output, $question->createQuestion());
-            $question->handleResponse($response, $responses, $input, $output);
+            $this->handleQuestionResponse($question, $response, $responses, $input, $output);
         }
 
         $reportMessage = $this->reportGenerator->generateReportMessage($responses);
@@ -53,6 +55,26 @@ final class CheckRepositoryStatusCommand extends Command
         }
 
         $output->writeln($reportMessage);
+
+        return Command::SUCCESS;
+    }
+
+    private function handleQuestionResponse(
+        QuestionInterface $question,
+        mixed $response,
+        ResponseCollection $responses,
+        InputInterface $input,
+        OutputInterface $output
+    ): int {
+        try {
+            $question->handleResponse($response, $responses, $input, $output);
+        } catch (OperationCancelledException $e) {
+            $output->writeln($e->getMessage());
+            return Command::SUCCESS;
+        } catch (\Exception $e) {
+            $output->writeln('<error>An error occurred: ' . $e->getMessage() . '</error>');
+            return Command::FAILURE;
+        }
 
         return Command::SUCCESS;
     }

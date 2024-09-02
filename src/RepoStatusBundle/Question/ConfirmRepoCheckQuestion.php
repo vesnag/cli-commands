@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\RepoStatusBundle\Question;
 
 use App\RepoStatusBundle\Collection\ResponseCollection;
-use Symfony\Component\Console\Command\Command;
+use App\RepoStatusBundle\Exception\OperationCancelledException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
@@ -45,7 +45,7 @@ class ConfirmRepoCheckQuestion implements QuestionInterface
 
         if (false === $response) {
             $output->writeln('<comment>Operation cancelled by user.</comment>');
-            exit(Command::SUCCESS);
+            throw new OperationCancelledException();
         }
 
         $responses->addResponse($this->getKey(), $response, $this);
