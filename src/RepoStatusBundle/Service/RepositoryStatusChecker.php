@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\RepoStatusBundle\Service;
 
-use App\RepoStatusBundle\Client\GitHubClient;
+use App\RepoStatusBundle\Client\VcsClient\GitHubClient;
 use App\RepoStatusBundle\DTO\GitHubQueryParams;
 use App\RepoStatusBundle\Model\PullRequest;
 use App\RepoStatusBundle\Model\Commit;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\RepoStatusBundle\Client;
+namespace App\RepoStatusBundle\Client\VcsClient;
 
 use App\RepoStatusBundle\DTO\GitHubQueryParams;
 use App\RepoStatusBundle\Model\Commit;

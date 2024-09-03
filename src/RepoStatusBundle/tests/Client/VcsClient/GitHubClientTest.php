@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\RepoStatusBundle\Client;
+namespace App\Tests\RepoStatusBundle\Client\VcsClient;
 
-use App\RepoStatusBundle\Client\GitHubClient;
+use App\RepoStatusBundle\Client\VcsClient\GitHubClient;
 use App\RepoStatusBundle\Util\GitHubApiUrlBuilder;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\HttpClient\HttpClientInterface;

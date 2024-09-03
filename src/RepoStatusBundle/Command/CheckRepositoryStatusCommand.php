@@ -10,7 +10,6 @@ use App\RepoStatusBundle\Exception\OperationCancelledException;
 use App\RepoStatusBundle\Question\PublishToSlackQuestion;
 use App\RepoStatusBundle\Question\QuestionInterface;
 use App\RepoStatusBundle\Service\ReportGeneratorInterface;
-use App\RepoStatusBundle\Service\MessageSender\MessageSender;
 use App\RepoStatusBundle\Service\SlackPublisher;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
