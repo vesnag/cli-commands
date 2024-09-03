@@ -26,8 +26,8 @@ class PublishToSlackQuestion implements QuestionInterface
     public function createQuestion(): ConfirmationQuestion
     {
         return new ConfirmationQuestion(
-            'Do you want to publish the report to Slack? (yes/no) [yes]',
-            true
+            'Do you want to publish the report to Slack? (yes/no) [false]',
+            false
         );
     }
 

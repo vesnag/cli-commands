@@ -7,7 +7,7 @@ namespace App\Tests\RepoStatusBundle\Command;
 use App\RepoStatusBundle\Command\CheckRepositoryStatusCommand;
 use App\RepoStatusBundle\Collector\QuestionCollector;
 use App\RepoStatusBundle\Service\ReportGeneratorInterface;
-use App\RepoStatusBundle\Service\MessageSender\MessageSender;
+use App\RepoStatusBundle\Service\SlackPublisher;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Helper\HelperSet;
@@ -36,11 +36,13 @@ class CheckRepositoryStatusCommandTest extends TestCase
         $reportGenerator->method('generateReportMessage')
             ->willReturn('Report: Number of PRs: 3');
 
-        $messageSender = $this->createMock(MessageSender::class);
-        $messageSender->method('sendMessage')
-            ->willReturn(true);
+        $slackPublisher = $this->createMock(SlackPublisher::class);
+        $slackPublisher->method('publishToSlack')
+            ->willReturnCallback(function ($reportMessage, $output) {
+                $output->writeln('Message successfully posted to Slack.');
+            });
 
-        $command = new CheckRepositoryStatusCommand($questionCollector, $reportGenerator, $messageSender);
+        $command = new CheckRepositoryStatusCommand($questionCollector, $reportGenerator, $slackPublisher);
 
         $application = new Application();
         $application->add($command);
@@ -60,6 +62,7 @@ class CheckRepositoryStatusCommandTest extends TestCase
 
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Report: Number of PRs: 3', $output);
+        $this->assertStringContainsString('Message successfully posted to Slack.', $output);
     }
 
     public function testExecuteWithInvalidResponses(): void
@@ -80,11 +83,13 @@ class CheckRepositoryStatusCommandTest extends TestCase
         $reportGenerator->method('generateReportMessage')
             ->willReturn('Report: Number of PRs: 3');
 
-        $messageSender = $this->createMock(MessageSender::class);
-        $messageSender->method('sendMessage')
-            ->willReturn(true);
+        $slackPublisher = $this->createMock(SlackPublisher::class);
+        $slackPublisher->method('publishToSlack')
+            ->willReturnCallback(function ($reportMessage, $output) {
+                $output->writeln('Message successfully posted to Slack.');
+            });
 
-        $command = new CheckRepositoryStatusCommand($questionCollector, $reportGenerator, $messageSender);
+        $command = new CheckRepositoryStatusCommand($questionCollector, $reportGenerator, $slackPublisher);
 
         $application = new Application();
         $application->add($command);

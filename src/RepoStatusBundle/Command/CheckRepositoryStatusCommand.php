@@ -7,9 +7,11 @@ namespace App\RepoStatusBundle\Command;
 use App\RepoStatusBundle\Collection\ResponseCollection;
 use App\RepoStatusBundle\Collector\QuestionCollector;
 use App\RepoStatusBundle\Exception\OperationCancelledException;
+use App\RepoStatusBundle\Question\PublishToSlackQuestion;
 use App\RepoStatusBundle\Question\QuestionInterface;
 use App\RepoStatusBundle\Service\ReportGeneratorInterface;
 use App\RepoStatusBundle\Service\MessageSender\MessageSender;
+use App\RepoStatusBundle\Service\SlackPublisher;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,7 +30,7 @@ final class CheckRepositoryStatusCommand extends Command
     public function __construct(
         private readonly QuestionCollector $questionCollector,
         private readonly ReportGeneratorInterface $reportGenerator,
-        private readonly MessageSender $messageSender
+        private readonly SlackPublisher $slackPublisher,
     ) {
         parent::__construct();
     }
@@ -62,8 +64,10 @@ final class CheckRepositoryStatusCommand extends Command
 
         $reportMessage = $this->reportGenerator->generateReportMessage($responseCollection);
 
-        if ($responseCollection->getResponse('publish_to_slack')) {
-            $this->sendSlackMessage($reportMessage, $output);
+        /** @var PublishToSlackQuestion $publishToSlackQuestion */
+        $publishToSlackQuestion = $this->questionCollector->getQuestionByKey('publish_to_slack');
+        if ($publishToSlackQuestion->shouldPublishToSlack()) {
+            $this->slackPublisher->publishToSlack($reportMessage, $output);
         }
 
         $output->writeln($reportMessage);
@@ -87,19 +91,18 @@ final class CheckRepositoryStatusCommand extends Command
     ): void {
         try {
             $question->handleResponse($response, $responses, $input, $output);
-        } catch (OperationCancelledException $e) {
-            $output->writeln($e->getMessage());
-        } catch (\Exception $e) {
-            $output->writeln('<error>An error occurred: ' . $e->getMessage() . '</error>');
+        } catch (\Throwable $e) {
+            $this->handleException($e, $output);
         }
     }
 
-    private function sendSlackMessage(string $reportMessage, OutputInterface $output): void
+    private function handleException(\Throwable $e, OutputInterface $output): void
     {
-        $sendMessageSuccess = $this->messageSender->sendMessage($reportMessage);
-
-        $message = $sendMessageSuccess ? 'Message successfully posted to Slack.' : 'Failed to post message to Slack.';
-        $output->writeln($message);
+        if ($e instanceof OperationCancelledException) {
+            $output->writeln($e->getMessage());
+        } else {
+            $output->writeln('<error>An error occurred: ' . $e->getMessage() . '</error>');
+        }
     }
 
     private function isValidResponseType(mixed $response): bool
