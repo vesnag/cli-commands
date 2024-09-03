@@ -10,6 +10,13 @@ The `RepoStatusBundle` offers the `app:check-repository-status` command. It can 
 php bin/console app:check-repository-status
 ```
 
+### Terminal Output
+<img width="802" alt="Screenshot 2024-09-03 at 11 55 34" src="https://github.com/user-attachments/assets/fd95c354-5211-4a5a-8a9c-fef82a49052b">
+
+### Slack Message
+<img width="583" alt="Screenshot 2024-09-03 at 11 53 22" src="https://github.com/user-attachments/assets/6200e17f-5696-4317-a494-5f47d7717039">
+
+
 ### Configuration
 Variables can be configured via the .env file. The following variables are used:
 
