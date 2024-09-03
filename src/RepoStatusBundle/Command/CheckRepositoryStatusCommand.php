@@ -51,13 +51,13 @@ final class CheckRepositoryStatusCommand extends Command
         foreach ($this->questionCollector->getQuestions() as $question) {
             $response = $questionHelper->ask($input, $output, $question->createQuestion());
 
-            if ($this->isValidResponseType($response)) {
-                 /** @var bool|string $response */
-                $this->handleQuestionResponse($question, $response, $responseCollection, $input, $output);
-            } else {
+            if (!$this->isValidResponseType($response)) {
                 $output->writeln('<error>Invalid response type received.</error>');
                 return Command::FAILURE;
             }
+
+             /** @var bool|string $response */
+            $this->handleQuestionResponse($question, $response, $responseCollection, $input, $output);
         }
 
         $reportMessage = $this->reportGenerator->generateReportMessage($responseCollection);
@@ -72,14 +72,11 @@ final class CheckRepositoryStatusCommand extends Command
     }
 
     /**
-     * Handles the response for a given question.
-     *
      * @param QuestionInterface<bool|string> $question
      * @param bool|string $response
      * @param ResponseCollection<bool|string> $responses
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return int
      */
     private function handleQuestionResponse(
         QuestionInterface $question,
@@ -87,18 +84,14 @@ final class CheckRepositoryStatusCommand extends Command
         ResponseCollection $responses,
         InputInterface $input,
         OutputInterface $output
-    ): int {
+    ): void {
         try {
             $question->handleResponse($response, $responses, $input, $output);
         } catch (OperationCancelledException $e) {
             $output->writeln($e->getMessage());
-            return Command::SUCCESS;
         } catch (\Exception $e) {
             $output->writeln('<error>An error occurred: ' . $e->getMessage() . '</error>');
-            return Command::FAILURE;
         }
-
-        return Command::SUCCESS;
     }
 
     private function sendSlackMessage(string $reportMessage, OutputInterface $output): void
@@ -109,12 +102,6 @@ final class CheckRepositoryStatusCommand extends Command
         $output->writeln($message);
     }
 
-    /**
-     * Validate if the response is of type bool or string.
-     *
-     * @param mixed $response
-     * @return bool
-     */
     private function isValidResponseType(mixed $response): bool
     {
         return is_bool($response) || is_string($response);
