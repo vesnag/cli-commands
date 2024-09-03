@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\RepoStatusBundle\Service;
 
+use App\RepoStatusBundle\Question\TimePeriodQuestion;
+
 final class DateRangeCalculator
 {
     /**
@@ -14,17 +16,21 @@ final class DateRangeCalculator
      */
     public function calculateDateRange(?string $timePeriodResponse): array
     {
-        if ($timePeriodResponse === 'today') {
-            $date = (new \DateTime())->format('Y-m-d');
-            return [$date, $date];
-        }
-
-        if ($timePeriodResponse === 'this week') {
-            $startDate = (new \DateTime())->modify('this week')->format('Y-m-d');
-            $endDate = (new \DateTime())->modify('this week +6 days')->format('Y-m-d');
-            return [$startDate, $endDate];
-        }
-
-        return [null, null];
+        $now = new \DateTime();
+        return match ($timePeriodResponse) {
+            TimePeriodQuestion::LAST_24_HOURS => [
+                $now->modify('-24 hours')->format(\DateTime::ATOM),
+                (new \DateTime())->format(\DateTime::ATOM)
+            ],
+            TimePeriodQuestion::LAST_7_DAYS => [
+                $now->modify('-7 days')->format(\DateTime::ATOM),
+                (new \DateTime())->format(\DateTime::ATOM)
+            ],
+            TimePeriodQuestion::LAST_30_DAYS => [
+                $now->modify('-30 days')->format(\DateTime::ATOM),
+                (new \DateTime())->format(\DateTime::ATOM)
+            ],
+            default => [null, null],
+        };
     }
 }

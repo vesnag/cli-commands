@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\RepoStatusBundle\Question;
 
 use App\RepoStatusBundle\Collection\ResponseCollection;
+use App\RepoStatusBundle\DTO\GitHubQueryParams;
+use App\RepoStatusBundle\Service\DateRangeCalculator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
@@ -17,7 +19,17 @@ use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 #[AsTaggedItem(index: 'app.question', priority: 95)]
 class TimePeriodQuestion implements QuestionInterface
 {
+    public const LAST_24_HOURS = 'Last 24 Hours';
+    public const LAST_7_DAYS = 'Last 7 Days';
+    public const LAST_30_DAYS = 'Last 30 Days';
+
     private string $selectedPeriod;
+
+    public function __construct(
+        private readonly DateRangeCalculator $dateRangeCalculator,
+        private readonly GitHubQueryParams $gitHubQueryParams,
+    ) {
+    }
 
     public function getKey(): string
     {
@@ -28,7 +40,11 @@ class TimePeriodQuestion implements QuestionInterface
     {
         return new ChoiceQuestion(
             'Please select the time period:',
-            ['Last 24 hours', 'Last 7 days', 'Last 30 days'],
+            [
+                self::LAST_24_HOURS,
+                self::LAST_7_DAYS,
+                self::LAST_30_DAYS
+            ],
             0
         );
     }
@@ -45,6 +61,10 @@ class TimePeriodQuestion implements QuestionInterface
     {
         $this->selectedPeriod = $response;
         $responses->addResponse($this->getKey(), $response, $this);
+
+        [$since, $until] = $this->dateRangeCalculator->calculateDateRange($response);
+
+        $this->gitHubQueryParams->setSince($since)->setUntil($until);
     }
 
     public function getSelectedPeriod(): string

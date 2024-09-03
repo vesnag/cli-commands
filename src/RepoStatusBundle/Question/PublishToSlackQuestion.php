@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 /**
  * @implements QuestionInterface<bool>
  */
-#[AsTaggedItem(index: 'app.question', priority: 100)]
+#[AsTaggedItem(index: 'app.question', priority: -100)]
 class PublishToSlackQuestion implements QuestionInterface
 {
     private bool $publishToSlack;
