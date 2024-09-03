@@ -6,6 +6,7 @@ namespace App\RepoStatusBundle\Service;
 
 use App\RepoStatusBundle\Collection\ResponseCollection;
 use App\RepoStatusBundle\Question\QuestionInterface;
+use App\RepoStatusBundle\Service\ReportGeneratorInterface;
 
 /**
  * @template T
@@ -14,8 +15,6 @@ use App\RepoStatusBundle\Question\QuestionInterface;
 class ReportGenerator implements ReportGeneratorInterface
 {
     /**
-     * Generate a report message.
-     *
      * @param ResponseCollection<T> $responses
      * @return string
      */

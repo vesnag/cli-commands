@@ -22,8 +22,8 @@ final class CheckRepositoryStatusCommand extends Command
     protected static string $defaultName = 'app:check-repository-status';
 
     /**
-     * @param QuestionCollector<mixed> $questionCollector
-     * @param ReportGeneratorInterface<string> $reportGenerator
+     * @param QuestionCollector<bool|string> $questionCollector
+     * @param ReportGeneratorInterface<bool|string> $reportGenerator
      */
     public function __construct(
         private readonly QuestionCollector $questionCollector,
@@ -45,12 +45,19 @@ final class CheckRepositoryStatusCommand extends Command
         /** @var QuestionHelper $questionHelper */
         $questionHelper = $this->getHelper('question');
 
-        /** @var ResponseCollection<mixed> $responseCollection */
+        /** @var ResponseCollection<bool|string> $responseCollection */
         $responseCollection = new ResponseCollection();
 
         foreach ($this->questionCollector->getQuestions() as $question) {
             $response = $questionHelper->ask($input, $output, $question->createQuestion());
-            $this->handleQuestionResponse($question, $response, $responseCollection, $input, $output);
+
+            if ($this->isValidResponseType($response)) {
+                 /** @var bool|string $response */
+                $this->handleQuestionResponse($question, $response, $responseCollection, $input, $output);
+            } else {
+                $output->writeln('<error>Invalid response type received.</error>');
+                return Command::FAILURE;
+            }
         }
 
         $reportMessage = $this->reportGenerator->generateReportMessage($responseCollection);
@@ -67,16 +74,16 @@ final class CheckRepositoryStatusCommand extends Command
     /**
      * Handles the response for a given question.
      *
-     * @param QuestionInterface<mixed> $question
-     * @param mixed $response
-     * @param ResponseCollection<mixed> $responses
+     * @param QuestionInterface<bool|string> $question
+     * @param bool|string $response
+     * @param ResponseCollection<bool|string> $responses
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int
      */
     private function handleQuestionResponse(
         QuestionInterface $question,
-        $response,
+        bool|string $response,
         ResponseCollection $responses,
         InputInterface $input,
         OutputInterface $output
@@ -100,5 +107,16 @@ final class CheckRepositoryStatusCommand extends Command
 
         $message = $sendMessageSuccess ? 'Message successfully posted to Slack.' : 'Failed to post message to Slack.';
         $output->writeln($message);
+    }
+
+    /**
+     * Validate if the response is of type bool or string.
+     *
+     * @param mixed $response
+     * @return bool
+     */
+    private function isValidResponseType(mixed $response): bool
+    {
+        return is_bool($response) || is_string($response);
     }
 }

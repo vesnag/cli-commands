@@ -49,10 +49,9 @@ class ConfirmRepoCheckQuestion implements QuestionInterface
      * @param ResponseCollection<bool> $responses
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return mixed
      * @throws OperationCancelledException if the user cancels the operation.
      */
-    public function handleResponse($response, ResponseCollection $responses, InputInterface $input, OutputInterface $output): mixed
+    public function handleResponse($response, ResponseCollection $responses, InputInterface $input, OutputInterface $output): void
     {
         if (!$response) {
             $output->writeln('<comment>Operation cancelled by user.</comment>');
@@ -60,8 +59,6 @@ class ConfirmRepoCheckQuestion implements QuestionInterface
         }
 
         $responses->addResponse($this->getKey(), $response, $this);
-
-        return $response;
     }
 
     public function getReportData(): ?string

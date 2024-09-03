@@ -38,14 +38,11 @@ class PublishToSlackQuestion implements QuestionInterface
      * @param ResponseCollection<bool> $responses
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return bool
      */
-    public function handleResponse($response, ResponseCollection $responses, InputInterface $input, OutputInterface $output): bool
+    public function handleResponse($response, ResponseCollection $responses, InputInterface $input, OutputInterface $output): void
     {
         $this->publishToSlack = $response;
         $responses->addResponse($this->getKey(), $response, $this);
-
-        return $response;
     }
 
     public function shouldPublishToSlack(): bool

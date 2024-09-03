@@ -40,17 +40,14 @@ abstract class AbstractCountQuestion implements QuestionInterface
      * @param ResponseCollection<bool> $responses The collection of responses.
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return bool
      */
-    public function handleResponse($response, ResponseCollection $responses, InputInterface $input, OutputInterface $output): bool
+    public function handleResponse($response, ResponseCollection $responses, InputInterface $input, OutputInterface $output): void
     {
         if ($response === true) {
             $this->count = $this->getCount();
             $output->writeln((string) $this->getReportData());
             $responses->addResponse($this->getKey(), $response, $this);
         }
-
-        return $response;
     }
 
     public function getReportData(): ?string

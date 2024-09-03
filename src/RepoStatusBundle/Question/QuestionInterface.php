@@ -34,9 +34,13 @@ interface QuestionInterface
      * @param ResponseCollection<T> $responses
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return T
      */
-    public function handleResponse($response, ResponseCollection $responses, InputInterface $input, OutputInterface $output);
+    public function handleResponse(
+        $response,
+        ResponseCollection $responses,
+        InputInterface $input,
+        OutputInterface $output,
+        ): void;
 
     /**
      * Get the report data for the question.

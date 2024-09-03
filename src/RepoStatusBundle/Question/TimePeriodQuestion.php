@@ -40,14 +40,11 @@ class TimePeriodQuestion implements QuestionInterface
      * @param ResponseCollection<string> $responses
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return string
      */
-    public function handleResponse($response, ResponseCollection $responses, InputInterface $input, OutputInterface $output): string
+    public function handleResponse($response, ResponseCollection $responses, InputInterface $input, OutputInterface $output): void
     {
         $this->selectedPeriod = $response;
         $responses->addResponse($this->getKey(), $response, $this);
-
-        return $response;
     }
 
     public function getSelectedPeriod(): string
