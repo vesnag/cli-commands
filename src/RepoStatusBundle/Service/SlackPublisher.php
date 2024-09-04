@@ -9,7 +9,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class SlackPublisher
 {
-    public function __construct(private MessageSender $messageSender) {}
+    public function __construct(private MessageSender $messageSender)
+    {
+    }
 
     public function publishToSlack(string $reportMessage, OutputInterface $output): void
     {

@@ -40,7 +40,7 @@ interface QuestionInterface
         ResponseCollection $responses,
         InputInterface $input,
         OutputInterface $output,
-        ): void;
+    ): void;
 
     /**
      * Get the report data for the question.
