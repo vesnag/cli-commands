@@ -15,6 +15,7 @@ use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Console\Question\Question;
 use App\RepoStatusBundle\Question\QuestionInterface;
+use App\RepoStatusBundle\Question\PublishToSlackQuestion;
 
 class CheckRepositoryStatusCommandTest extends TestCase
 {
@@ -22,8 +23,10 @@ class CheckRepositoryStatusCommandTest extends TestCase
     {
         $questionCollector = $this->createMock(QuestionCollector::class);
         $question = $this->createMock(QuestionInterface::class);
+        $publishToSlackQuestion = $this->createMock(PublishToSlackQuestion::class);
 
         $questionCollector->method('getQuestions')->willReturn([$question]);
+        $questionCollector->method('getQuestionByKey')->willReturn($publishToSlackQuestion);
 
         $question->method('createQuestion')
             ->willReturn($this->createMock(Question::class));
@@ -31,6 +34,8 @@ class CheckRepositoryStatusCommandTest extends TestCase
             ->willReturnCallback(function ($response, $responses, $input, $output) use ($question) {
                 $responses->addResponse('get_count_prs', true, $question);
             });
+
+        $publishToSlackQuestion->method('shouldPublishToSlack')->willReturn(true);
 
         $reportGenerator = $this->createMock(ReportGeneratorInterface::class);
         $reportGenerator->method('generateReportMessage')
@@ -69,8 +74,10 @@ class CheckRepositoryStatusCommandTest extends TestCase
     {
         $questionCollector = $this->createMock(QuestionCollector::class);
         $question = $this->createMock(QuestionInterface::class);
+        $publishToSlackQuestion = $this->createMock(PublishToSlackQuestion::class);
 
         $questionCollector->method('getQuestions')->willReturn([$question]);
+        $questionCollector->method('getQuestionByKey')->willReturn($publishToSlackQuestion);
 
         $question->method('createQuestion')
             ->willReturn($this->createMock(Question::class));
@@ -78,6 +85,8 @@ class CheckRepositoryStatusCommandTest extends TestCase
             ->willReturnCallback(function ($response, $responses, $input, $output) use ($question) {
                 $responses->addResponse('get_count_prs', true, $question);
             });
+
+        $publishToSlackQuestion->method('shouldPublishToSlack')->willReturn(false);
 
         $reportGenerator = $this->createMock(ReportGeneratorInterface::class);
         $reportGenerator->method('generateReportMessage')
