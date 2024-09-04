@@ -11,7 +11,7 @@ php bin/console app:check-repository-status
 ```
 
 ### Terminal Output
-<img width="816" alt="Screenshot 2024-09-04 at 13 28 18" src="https://github.com/user-attachments/assets/b0f6b81c-bf27-41a3-a4b4-f5aaf2364aa2">
+<img width="802" alt="Screenshot 2024-09-04 at 13 50 30" src="https://github.com/user-attachments/assets/a45ab4d2-c6e3-4fe6-b21b-f0b4d5529245">
 
 ### Slack Message
 <img width="583" alt="Screenshot 2024-09-03 at 11 53 22" src="https://github.com/user-attachments/assets/6200e17f-5696-4317-a494-5f47d7717039">
@@ -44,8 +44,6 @@ This repository also includes tasks for static analysis, code formatting, and un
 * Run static analysis and code formatting: `castor task:code:validate`
 * Run unit tests: `castor task:code:run-tests`
 * Run both validation and unit tests: `castor task:code:validate-and-test`
-* Check repository status `castor task:symfony:check-repository-status`
-
 
 ---
 
