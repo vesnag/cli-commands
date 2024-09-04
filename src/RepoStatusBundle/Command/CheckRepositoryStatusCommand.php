@@ -98,7 +98,8 @@ final class CheckRepositoryStatusCommand extends Command
     private function handleException(\Throwable $e, OutputInterface $output): void
     {
         if ($e instanceof OperationCancelledException) {
-            $output->writeln($e->getMessage());
+            $output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
+            exit(Command::FAILURE);
         } else {
             $output->writeln('<error>An error occurred: ' . $e->getMessage() . '</error>');
         }

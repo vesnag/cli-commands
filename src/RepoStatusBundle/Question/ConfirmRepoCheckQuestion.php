@@ -54,7 +54,6 @@ class ConfirmRepoCheckQuestion implements QuestionInterface
     public function handleResponse($response, ResponseCollection $responses, InputInterface $input, OutputInterface $output): void
     {
         if (!$response) {
-            $output->writeln('<comment>Operation cancelled by user.</comment>');
             throw new OperationCancelledException();
         }
 
