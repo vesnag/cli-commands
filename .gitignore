@@ -29,4 +29,5 @@ test-results
 phpstan.neon
 ###< phpstan/phpstan ###
 
-
+#Castor
+.castor.stub.php

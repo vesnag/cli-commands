@@ -36,6 +36,16 @@ SLACK_BOT_TOKEN=xoxp-******
 # Slack Configuration
 SLACK_CHANNEL=your-channel
 ```
+
+## Castor Tasks
+
+This repository also includes tasks for static analysis, code formatting, and unit testing using [Castor](https://github.com/jolicode/castor). To run these tasks, use the following commands:
+
+* Run static analysis and code formatting: `castor code:validate`
+* Run unit tests: `castor code:run-tests`
+* Run both validation and unit tests: `castor code:validate-and-test`
+
+
 ---
 
-This repository is still a work in progress. The idea is simple: gather some information from the repository and post the status to Slack. It's more of a playground for practicing with the Symfony framework.
+This repository is still a work in progress and will always be. The idea is simple: gather some information from the repository and post the status to Slack. It's more of a playground for practicing with the Symfony framework.
