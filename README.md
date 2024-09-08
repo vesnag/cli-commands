@@ -11,7 +11,7 @@ php bin/console app:check-repository-status
 ```
 
 ### Terminal Output
-<img width="802" alt="Screenshot 2024-09-03 at 11 55 34" src="https://github.com/user-attachments/assets/fd95c354-5211-4a5a-8a9c-fef82a49052b">
+<img width="802" alt="Screenshot 2024-09-04 at 13 50 30" src="https://github.com/user-attachments/assets/a45ab4d2-c6e3-4fe6-b21b-f0b4d5529245">
 
 ### Slack Message
 <img width="583" alt="Screenshot 2024-09-03 at 11 53 22" src="https://github.com/user-attachments/assets/6200e17f-5696-4317-a494-5f47d7717039">
@@ -41,10 +41,9 @@ SLACK_CHANNEL=your-channel
 
 This repository also includes tasks for static analysis, code formatting, and unit testing using [Castor](https://github.com/jolicode/castor). To run these tasks, use the following commands:
 
-* Run static analysis and code formatting: `castor code:validate`
-* Run unit tests: `castor code:run-tests`
-* Run both validation and unit tests: `castor code:validate-and-test`
-
+* Run static analysis and code formatting: `castor task:code:validate`
+* Run unit tests: `castor task:code:run-tests`
+* Run both validation and unit tests: `castor task:code:validate-and-test`
 
 ---
 
