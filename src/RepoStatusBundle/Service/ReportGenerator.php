@@ -20,13 +20,17 @@ class ReportGenerator implements ReportGeneratorInterface
      */
     public function generateReportMessage(ResponseCollection $responses): string
     {
-        $report = '';
+        $separator = str_repeat('-', 80) . PHP_EOL;
+        $report = PHP_EOL . $separator;
 
-        foreach ($responses as $response) {
+        $reportData = array_map(function ($response) {
             /** @var QuestionInterface<T> $question */
             $question = $response['question'];
-            $report .= $question->getReportData() . PHP_EOL;
-        }
+            return $question->getReportData();
+        }, iterator_to_array($responses));
+
+        $report .= implode(PHP_EOL, $reportData);
+        $report = rtrim($report) . PHP_EOL . $separator;
 
         return $report;
     }
