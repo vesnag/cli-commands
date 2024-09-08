@@ -28,12 +28,14 @@ GITLAB_REPO=gitlab_repo
 BITBUCKET_OWNER=bitbucket_owner
 BITBUCKET_REPO=bitbucker_repo
 GITHUB_API_BASE_URL=https://api.github.com
+DEFAULT_VCS_AUTHOR=usename
 
 # Slack Bot User OAuth Token
 SLACK_BOT_TOKEN=xoxp-******
 
 # Slack Configuration
 SLACK_CHANNEL=your-channel
+SLACK_API_BASE_URL=https://slack.com/api
 ```
 
 ## Castor Tasks
