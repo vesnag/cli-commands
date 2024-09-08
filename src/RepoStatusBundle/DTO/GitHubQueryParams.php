@@ -8,6 +8,7 @@ class GitHubQueryParams
 {
     private ?string $since = null;
     private ?string $until = null;
+    private ?string $author = null;
 
     /**
      * @var array<string, string>
@@ -36,6 +37,17 @@ class GitHubQueryParams
         return $this->until;
     }
 
+    public function setAuthor(?string $author): self
+    {
+        $this->author = $author;
+        return $this;
+    }
+
+    public function getAuthor(): ?string
+    {
+        return $this->author;
+    }
+
     public function addParam(string $key, string $value): self
     {
         $this->additionalParams[$key] = $value;
@@ -50,6 +62,7 @@ class GitHubQueryParams
         $params = array_filter([
             'since' => $this->since,
             'until' => $this->until,
+            'author' => $this->author,
         ]);
 
         return array_merge($params, $this->additionalParams);

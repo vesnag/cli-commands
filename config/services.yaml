@@ -13,6 +13,7 @@ services:
             $slackBotToken: '%slack.bot_token%'
             $slackChannel: '%slack.channel%'
             $slackApiBaseUrl: '%slack.api_base_url%'
+            $defaultVcsAuthor: '%default_vcs_author%'
 
     App\:
         resource: '../src/*'

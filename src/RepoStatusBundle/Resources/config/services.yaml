@@ -1,7 +1,7 @@
 parameters:
     github.owner: '%env(GITHUB_OWNER)%'
     github.repo: '%env(GITHUB_REPO)%'
-    github.api_base_url: 'https://api.github.com'
+    github.api_base_url: '%env(GITHUB_API_BASE_URL)%'
     gitlab:
         owner: '%env(GITLAB_OWNER)%'
         repo: '%env(GITLAB_REPO)%'
@@ -10,7 +10,8 @@ parameters:
         repo: '%env(BITBUCKET_REPO)%'
     slack.bot_token: '%env(SLACK_BOT_TOKEN)%'
     slack.channel: '%env(SLACK_CHANNEL)%'
-    slack.api_base_url: 'https://slack.com/api'
+    slack.api_base_url: '%env(SLACK_API_BASE_URL)%'
+    default_vcs_author: '%env(DEFAULT_VCS_AUTHOR)%'
 
 services:
     _defaults:
@@ -19,7 +20,6 @@ services:
         bind:
             $owner: null
             $repo: null
-            $questions: ['What is your name?', 'What is your favorite color?']
 
     App\RepoStatusBundle\Config\GitHubConfig:
         bind:
