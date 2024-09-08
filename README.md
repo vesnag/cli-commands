@@ -11,11 +11,10 @@ php bin/console app:check-repository-status
 ```
 
 ### Terminal Output
-<img width="802" alt="Screenshot 2024-09-04 at 13 50 30" src="https://github.com/user-attachments/assets/a45ab4d2-c6e3-4fe6-b21b-f0b4d5529245">
+<img width="978" alt="Screenshot 2024-09-08 at 14 45 34" src="https://github.com/user-attachments/assets/27dd0b39-e014-4e5c-8467-c0dc7ab9b3b1">
 
 ### Slack Message
-<img width="583" alt="Screenshot 2024-09-03 at 11 53 22" src="https://github.com/user-attachments/assets/6200e17f-5696-4317-a494-5f47d7717039">
-
+<img width="489" alt="Screenshot 2024-09-08 at 14 45 53" src="https://github.com/user-attachments/assets/8b2b516e-c803-4056-a2f2-452d41191574">
 
 ### Configuration
 Variables can be configured via the .env file. The following variables are used:
