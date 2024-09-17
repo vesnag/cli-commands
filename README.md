@@ -40,9 +40,9 @@ SLACK_CHANNEL=your-channel
 
 This repository also includes tasks for static analysis, code formatting, and unit testing using [Castor](https://github.com/jolicode/castor). To run these tasks, use the following commands:
 
-* Run static analysis and code formatting: `castor task:code:validate`
-* Run unit tests: `castor task:code:run-tests`
-* Run both validation and unit tests: `castor task:code:validate-and-test`
+* Run static analysis and code formatting: `castor code:validate`
+* Run unit tests: `castor code:run-tests`
+* Run both validation and unit tests: `castor code:validate-and-test`
 
 ---
 
